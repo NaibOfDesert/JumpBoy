@@ -1,3 +1,4 @@
+using Assets.Scripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,9 +13,13 @@ public class PlayerController : MonoBehaviour
     private float moveHorizontal;
     private float moveVertical;
 
+    private Player PlayerOne;
+    private Player PlayerTwo;
+
     // Start is called before the first frame update
     void Start()
     {
+
         rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
 
         moveSpeed = 1.2f;
