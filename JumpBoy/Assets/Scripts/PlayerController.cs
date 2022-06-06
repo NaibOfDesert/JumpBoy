@@ -5,46 +5,36 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody2D rigidbody2D;
-
-    private bool isJumping;
-    private float jumpForce;
-    private float moveSpeed;
-    private float moveHorizontal;
-    private float moveVertical;
-
-    private Player PlayerOne;
-    private Player PlayerTwo;
+    public Player PlayerOne { get; private set; }
+    public Player PlayerTwo { get; private set; }
 
     // Start is called before the first frame update
     void Start()
     {
-
-        rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
-
-        moveSpeed = 1.2f;
-        jumpForce = 20.0f;
-        isJumping = false;
+        Player Player = new Player(0, 1, 1.2f, 20.0f, gameObject.GetComponent<Rigidbody2D>());
+        PlayerOne = Player;
+        Debug.Log(PlayerOne.JumpForce);
+        PlayerOne.IsJumping = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        moveHorizontal = Input.GetAxisRaw("Horizontal"); // (-1, 0, 1)
-        moveVertical = Input.GetAxisRaw("Vertical"); // (-1, 0, 1)
+        PlayerOne.MoveHorizontal = Input.GetAxisRaw("Horizontal"); // (-1, 0, 1)
+        PlayerOne.MoveVertical = Input.GetAxisRaw("Vertical"); // (-1, 0, 1)
     }
 
     // Update is called for physics changes
     void FixedUpdate()
     {
-        if(moveHorizontal > 0.1f || moveHorizontal < -0.1f)
+        if(PlayerOne.MoveHorizontal > 0.1f || PlayerOne.MoveHorizontal < -0.1f)
         {
-            rigidbody2D.AddForce(new Vector2(moveHorizontal * moveSpeed, 0f), ForceMode2D.Impulse);
+            PlayerOne.Rigidbody2D.AddForce(new Vector2(PlayerOne.MoveHorizontal * PlayerOne.MoveSpeed, 0f), ForceMode2D.Impulse);
         }
         
-        if (!isJumping && moveVertical > 0.1f)
+        if (!PlayerOne.IsJumping && PlayerOne.MoveVertical > 0.1f)
         {
-            rigidbody2D.AddForce(new Vector2(0f, moveVertical * jumpForce), ForceMode2D.Impulse);
+            PlayerOne.Rigidbody2D.AddForce(new Vector2(0f, PlayerOne.MoveVertical * PlayerOne.JumpForce), ForceMode2D.Impulse);
         }
     }
 
@@ -52,7 +42,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Platform")
         {
-            isJumping = false;
+            PlayerOne.IsJumping = false;
         }
     }
 
@@ -60,7 +50,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Platform")
         {
-            isJumping = true;
+            PlayerOne.IsJumping = true;
         }
     }
 }
