@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Wall Jump")]
+    public LayerMask GroundLayer;
+    public Object GroundObject;
+
     protected Player player { get; private set; }
 
     // Players Jump Options
@@ -15,13 +19,12 @@ public class PlayerController : MonoBehaviour
     protected RaycastHit2D wallHitCheck { get; set; }
     protected float jumTime {get; set;}
 
-    protected LayerMask GroundLayer { get; set; }
 
 
     // Start is called before the first frame update
     void Start()
     {
-        Player newPlayer = new Player(0, 1, 1.2f, 20.0f, false, true, gameObject.GetComponent<Rigidbody2D>());
+        Player newPlayer = new Player(0, 1, 1.0f, 2.0f, false, true, gameObject.GetComponent<Rigidbody2D>());
         player = newPlayer;
 
         wallJumpTime = 0.2f;
@@ -60,7 +63,7 @@ public class PlayerController : MonoBehaviour
                 }
         else wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(-wallDistance, 0), wallDistance, GroundLayer);
 
-
+        
         if(wallHitCheck && player.IsJumping && (player.MoveHorizontal > 0.1f || player.MoveHorizontal < -0.1f))
         {
             isWallSliding = true;
@@ -72,8 +75,9 @@ public class PlayerController : MonoBehaviour
 
         if (isWallSliding)
         {
-            player.Rigidbody2D.AddForce(new Vector2(0f, player.MoveVertical), ForceMode2D.Impulse);
+            player.Rigidbody2D.AddForce(new Vector2(0f, player.MoveVertical * (-0.5f)), ForceMode2D.Impulse);
         }
+        
     }
     private void MovePlayerHorizontal() {
         // split for Players
@@ -81,6 +85,7 @@ public class PlayerController : MonoBehaviour
         {
             player.Rigidbody2D.AddForce(new Vector2(player.MoveHorizontal * player.MoveSpeed, 0f), ForceMode2D.Impulse);
         }
+
     }   
 
     private void MovePlayerVertical() {
@@ -92,14 +97,14 @@ public class PlayerController : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Platform")
+        if (collision.gameObject == GroundObject)
         {
             player.IsJumping = false;
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Platform")
+        if (collision.gameObject == GroundObject)
         {
             player.IsJumping = true;
         }
