@@ -8,18 +8,21 @@ public class PlayerController : MonoBehaviour
     [Header("Wall Jump")]
     public LayerMask GroundLayer;
     public Object GroundObject;
-
-    protected Player player { get; private set; }
+    public float wallDistance;
+    public bool isWallSliding;
+    public RaycastHit2D wallHitCheck;
+    public float jumpTime;
 
     // Players Jump Options
-    protected float wallJumpTime { get; set; }
-    protected float wallSlideSpeed { get; set; }
-    protected float wallDistance { get; set; }
-    protected bool isWallSliding { get; set; }
-    protected RaycastHit2D wallHitCheck { get; set; }
-    protected float jumTime {get; set;}
+    public float wallJumpTime;
+    public float wallSlideSpeed;
 
+    [Header("Player Test Values")]
 
+    public bool isJumping;
+    public bool isFacingRight;
+
+    protected Player player { get; private set; }
 
     // Start is called before the first frame update
     void Start()
@@ -30,24 +33,30 @@ public class PlayerController : MonoBehaviour
         wallJumpTime = 0.2f;
         wallSlideSpeed = 0.3f;
         wallDistance = 0.5f;
-        isWallSliding = false;
+        isWallSliding = false;  
     }
 
     // Update is called once per frame
     void Update()
     {
         GetPlayerPosition();
+        isFacingRight = player.IsFacingRight;
+        isJumping = player.IsJumping;
+
+   
     }
 
     private void GetPlayerPosition()
     {
         player.MoveHorizontal = Input.GetAxisRaw("Horizontal"); // (-1, 0, 1)
         player.MoveVertical = Input.GetAxisRaw("Vertical"); // (-1, 0, 1)
+        
     }
     // Update is called for physics changes
     void FixedUpdate()
     {
         MovePlayer();
+        
     }
 
     private void MovePlayer()
@@ -58,18 +67,22 @@ public class PlayerController : MonoBehaviour
         if (player.MoveHorizontal > 0.1f && player.IsFacingRight == false) Flip();
         else if (player.MoveHorizontal < -0.1f && player.IsFacingRight == true) Flip();
 
-        if (player.IsFacingRight) {
+        if (player.IsFacingRight)
+        {
             wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, GroundLayer);
-                }
-        else wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(-wallDistance, 0), wallDistance, GroundLayer);
+            Debug.DrawRay(transform.position, new Vector2(wallDistance, 0), Color.red);
+        }
+        else { wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(-wallDistance, 0), wallDistance, GroundLayer);
+            Debug.DrawRay(transform.position, new Vector2(-wallDistance, 0), Color.red);
+        }
 
-        
-        if(wallHitCheck && player.IsJumping && (player.MoveHorizontal > 0.1f || player.MoveHorizontal < -0.1f))
+        // (player.MoveHorizontal > 0.1f || player.MoveHorizontal < -0.1f)
+        if (wallHitCheck && player.IsJumping && (player.MoveHorizontal > 0.1f || player.MoveHorizontal < -0.1f))
         {
             isWallSliding = true;
             wallJumpTime = Time.time + wallJumpTime;
 
-        } else if (jumTime < Time.time) {
+        } else if (jumpTime < Time.time) {
             isWallSliding = false; 
         } 
 
