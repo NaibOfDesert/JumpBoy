@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     [Header("Player Test Values")]
     public bool isJumping;
     public bool isFacingRight;
+    public bool isCanJump;
 
     protected Player player { get; private set; }
 
@@ -32,7 +33,8 @@ public class PlayerController : MonoBehaviour
         wallJumpTime = 0.2f;
         wallSlideSpeed = 0.3f;
         wallDistance = 0.18f;
-        isWallSliding = false;  
+        isWallSliding = false;
+        isCanJump = false;
     }
 
     // Update is called once per frame
@@ -80,7 +82,7 @@ public class PlayerController : MonoBehaviour
     
     private void MovePlayerVertical() {
         // split for Players
-        if (!player.IsJumping && player.MoveVertical > 0.1f)
+        if (isCanJump && player.MoveVertical > 0.1f)
         {
             player.Rigidbody2D.AddForce(new Vector2(0f, player.MoveVertical * player.JumpForce), ForceMode2D.Impulse);
         }
@@ -112,16 +114,24 @@ public class PlayerController : MonoBehaviour
         }
 
         // (player.MoveHorizontal > 0.1f || player.MoveHorizontal < -0.1f)
-        if (wallHitCheck && player.IsJumping && (player.MoveHorizontal > 0.1f || player.MoveHorizontal < -0.1f))
+        if (wallHitCheck && player.IsJumping )
         {
             isWallSliding = true;
+            isCanJump = true;
             wallJumpTime = Time.time + wallJumpTime;
 
         }
         else isWallSliding = false;
+
+
+        if (isWallSliding && player.MoveVertical < -0.1f)
+        {
+            player.MoveVertical *= 0.1f;
+                }
         /*if (jumpTime < Time.time)
         {
             isWallSliding = false;
+            wallJumpTime = 0f;
         }*/
 
         if (isWallSliding)
@@ -135,6 +145,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject == GroundObject)
         {
             player.IsJumping = false;
+            isCanJump = true;
         }
     }
 
@@ -143,6 +154,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject == GroundObject)
         {
             player.IsJumping = true;
+            isCanJump = false;
         }
     }
 }
