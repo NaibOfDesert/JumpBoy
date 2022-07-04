@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    // to simplification
     [Header("Wall Jump")]
     public LayerMask GroundLayer;
     public Object GroundObject;
+    public LayerMask CoinLayer;
     public float wallDistance;
     public bool isWallSliding;
     public RaycastHit2D wallHitCheck;
@@ -15,38 +17,46 @@ public class PlayerController : MonoBehaviour
 
     // Players Jump Options
     public float wallJumpTime;
+    public float wallJumpBreakTime;
     public float wallSlideSpeed;
 
     [Header("Player Test Values")]
     public bool isJumping;
     public bool isFacingRight;
     public bool isCanJump;
+    public float Vertical;
+    public float VerticalSpeed;
+    int jumpTimeCounter;
 
     protected Player player { get; private set; }
 
     // Start is called before the first frame update
     void Start()
     {
-        Player newPlayer = new Player(0, 1, 1.0f, 20.0f, false, true, gameObject.GetComponent<Rigidbody2D>());
+        Player newPlayer = new Player(0, 1, 0.2f, 5.0f, false, true, gameObject.GetComponent<Rigidbody2D>());
         player = newPlayer;
 
-        wallJumpTime = 0.2f;
-        wallSlideSpeed = 0.3f;
+        wallJumpTime = 0f;
+        wallJumpBreakTime = 0f;
+        wallSlideSpeed = 0.5f;
         wallDistance = 0.18f;
         isWallSliding = false;
         isCanJump = false;
+        jumpTimeCounter = 0;
+                
+
     }
 
-    // Update is called once per frame
+    // Update is called once per frame  
     void Update()
     {
         GetPlayerPosition();
-
+        RunAnimation(); 
         // testing elements
         isFacingRight = player.IsFacingRight;
         isJumping = player.IsJumping;
-
-   
+        Vertical = player.MoveVertical;
+        VerticalSpeed = player.MoveSpeed;
     }
 
     private void GetPlayerPosition()
@@ -60,7 +70,6 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         MovePlayer();
-        
     }
 
     private void MovePlayer()
@@ -68,6 +77,7 @@ public class PlayerController : MonoBehaviour
         MovePlayerHorizontal();
         MovePlayerVertical();
         FlipCheck();
+        IsCanJump();
         WallSlidingCheck();
         
     }
@@ -85,6 +95,7 @@ public class PlayerController : MonoBehaviour
         if (isCanJump && player.MoveVertical > 0.1f)
         {
             player.Rigidbody2D.AddForce(new Vector2(0f, player.MoveVertical * player.JumpForce), ForceMode2D.Impulse);
+
         }
     }
 
@@ -100,52 +111,83 @@ public class PlayerController : MonoBehaviour
         player.IsFacingRight = !player.IsFacingRight;
     }
 
+    // to simplification
     private void WallSlidingCheck()
     {
         if (player.IsFacingRight)
         {
             wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, GroundLayer);
-            Debug.DrawRay(transform.position, new Vector2(wallDistance, 0), Color.red);
+            // Debug.DrawRay(transform.position, new Vector2(wallDistance, 0), Color.red);
         }
         else
         {
             wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(-wallDistance, 0), wallDistance, GroundLayer);
-            Debug.DrawRay(transform.position, new Vector2(-wallDistance, 0), Color.red);
+            // Debug.DrawRay(transform.position, new Vector2(-wallDistance, 0), Color.red);
         }
 
-        // (player.MoveHorizontal > 0.1f || player.MoveHorizontal < -0.1f)
         if (wallHitCheck && player.IsJumping )
         {
             isWallSliding = true;
-            isCanJump = true;
-            wallJumpTime = Time.time + wallJumpTime;
-
         }
         else isWallSliding = false;
 
+        if (isWallSliding) isCanJump = true;
 
-        if (isWallSliding && player.MoveVertical < -0.1f)
-        {
-            player.MoveVertical *= 0.1f;
-                }
-        /*if (jumpTime < Time.time)
-        {
-            isWallSliding = false;
-            wallJumpTime = 0f;
-        }*/
 
-        if (isWallSliding)
+        if (isWallSliding && (player.MoveVertical < 0.1f || player.MoveVertical > -0.1f)) 
         {
-            player.Rigidbody2D.AddForce(new Vector2(0f, player.MoveVertical * (1.0f)), ForceMode2D.Impulse);
+            TimeCheck();
+            // player.Rigidbody2D.AddForce(new Vector2(0f, player.MoveVertical * 0.5f), ForceMode2D.Impulse); 
+            player.Rigidbody2D.velocity = new Vector2(player.Rigidbody2D.velocity.x, Mathf.Clamp(player.Rigidbody2D.velocity.y, wallSlideSpeed, float.MaxValue));
+
         }
+         // transform.position = new Vector2(transform.position.x, Mathf.Clamp(transform.position.y , wallSlideSpeed, float.MaxValue));
+
+        /* if (isWallSliding)    
+         {
+             player.Rigidbody2D.AddForce(new Vector2(0f, player.MoveVertical * (-1.0f)), ForceMode2D.Impulse);
+         }*/
     }
 
+    private void IsCanJump()
+    {
+        if (player.IsJumping) isCanJump = false;
+        else isCanJump = true;
+    }
+
+    private void TimeCheck()
+    {
+        if (wallJumpTime < 0.1)
+        {
+            isCanJump = true;
+            wallJumpTime += Time.deltaTime;
+            wallJumpBreakTime = 0;
+        }
+        else {
+            if (wallJumpBreakTime < 0.3)
+            {
+                isCanJump = false;
+                wallJumpBreakTime += Time.deltaTime;
+            }
+            else wallJumpTime = 0;
+        }
+            
+    }
+
+    private void RunAnimation()
+    {
+
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {   
         if (collision.gameObject == GroundObject)
         {
             player.IsJumping = false;
-            isCanJump = true;
+        }
+
+        if (collision.gameObject.layer == CoinLayer)
+        {
+            Destroy(collision.gameObject);
         }
     }
 
@@ -154,7 +196,6 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject == GroundObject)
         {
             player.IsJumping = true;
-            isCanJump = false;
         }
     }
 }
