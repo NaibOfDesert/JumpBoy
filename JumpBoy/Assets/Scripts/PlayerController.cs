@@ -6,16 +6,19 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     // to simplification
-    [Header("Wall Jump")]
+    [Header("Layers & Objects")]
     public LayerMask GroundLayer;
-    public Object GroundObject;
+    public LayerMask JumpUpgradeLayer;
     public LayerMask CoinLayer;
+    public LayerMask GoldLayer;
+    public Object GroundObject;
+
+    // 
+    [Header("Player Values")]
+    public RaycastHit2D wallHitCheck;
     public float wallDistance;
     public bool isWallSliding;
-    public RaycastHit2D wallHitCheck;
     public float jumpTime;
-
-    // Players Jump Options
     public float wallJumpTime;
     public float wallJumpBreakTime;
     public float wallSlideSpeed;
@@ -180,14 +183,30 @@ public class PlayerController : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {   
+        // Ground Collision
         if (collision.gameObject == GroundObject)
         {
             player.IsJumping = false;
         }
 
-        if (collision.gameObject.layer == CoinLayer)
+        // Coin Collision - adding Coin Value
+        if (collision.gameObject.layer == CoinLayer)    
         {
             Destroy(collision.gameObject);
+            player.CoinValue++;
+        }
+
+        // JumpUpgrade Collision - improve jump force
+        if (collision.gameObject.layer == JumpUpgradeLayer)
+        {
+            Destroy(collision.gameObject);
+            player.JumpLevel++;
+        }
+
+        // Gold Collision - quit game
+        if (collision.gameObject.layer == GoldLayer)
+        {
+            Application.Quit();
         }
     }
 
