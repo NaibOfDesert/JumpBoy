@@ -29,8 +29,12 @@ public class PlayerController : MonoBehaviour
     public bool isCanJump;
     public float Vertical;
     public float VerticalSpeed;
-    int jumpTimeCounter;
+    public int jumpTimeCounter;
+    public bool isCollisionGold;
 
+    public string coinTag;
+    public string goldTag;
+    public string jumpUpgradeTag;
     protected Player player { get; private set; }
 
     // Start is called before the first frame update
@@ -38,15 +42,17 @@ public class PlayerController : MonoBehaviour
     {
         Player newPlayer = new Player(0, 1, 0.2f, 5.0f, false, true, gameObject.GetComponent<Rigidbody2D>());
         player = newPlayer;
-
-        wallJumpTime = 0f;
+        
+    wallJumpTime = 0f;
         wallJumpBreakTime = 0f;
         wallSlideSpeed = 0.5f;
         wallDistance = 0.18f;
         isWallSliding = false;
         isCanJump = false;
         jumpTimeCounter = 0;
-                
+        isCollisionGold = false;
+
+
 
     }
 
@@ -139,7 +145,7 @@ public class PlayerController : MonoBehaviour
 
         if (isWallSliding && (player.MoveVertical < 0.1f || player.MoveVertical > -0.1f)) 
         {
-            TimeCheck();
+            // TimeCheck();
             // player.Rigidbody2D.AddForce(new Vector2(0f, player.MoveVertical * 0.5f), ForceMode2D.Impulse); 
             player.Rigidbody2D.velocity = new Vector2(player.Rigidbody2D.velocity.x, Mathf.Clamp(player.Rigidbody2D.velocity.y, wallSlideSpeed, float.MaxValue));
 
@@ -182,7 +188,7 @@ public class PlayerController : MonoBehaviour
 
     }
     private void OnTriggerEnter2D(Collider2D collision)
-    {   
+    {
         // Ground Collision
         if (collision.gameObject == GroundObject)
         {
@@ -190,23 +196,37 @@ public class PlayerController : MonoBehaviour
         }
 
         // Coin Collision - adding Coin Value
-        if (collision.gameObject.layer == CoinLayer)    
+        if (collision.gameObject.CompareTag(coinTag))
         {
             Destroy(collision.gameObject);
             player.CoinValue++;
+            Debug.Log(player.CoinValue);
         }
 
         // JumpUpgrade Collision - improve jump force
-        if (collision.gameObject.layer == JumpUpgradeLayer)
+        if (collision.gameObject.CompareTag(jumpUpgradeTag))
         {
             Destroy(collision.gameObject);
             player.JumpLevel++;
         }
 
         // Gold Collision - quit game
-        if (collision.gameObject.layer == GoldLayer)
+       if (collision.gameObject.CompareTag(goldTag))
         {
+            isCollisionGold = true;
             Application.Quit();
+
+        }
+    }
+
+    private void OnCollisionEnter2D(UnityEngine.Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag(coinTag))
+        {
+            /*Debug.Log("Gold");
+            isCollisionGold = true;
+            Application.Quit();*/
+
         }
     }
 
