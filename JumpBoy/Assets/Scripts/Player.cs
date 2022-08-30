@@ -9,11 +9,11 @@ namespace Assets.Scripts
 {
     public class Player
     {
-        public Player(int coinValue, int speedLevel,  float moveSpeed, float jumpForce, bool isJumping, bool isFacingRight,  Rigidbody2D rigidbody2D)
+        public Player(int coinValue, int speedLevel,   float jumpForce, bool isJumping, bool isFacingRight,  Rigidbody2D rigidbody2D)
         {
             CoinValue = coinValue;
             SpeedLevel = speedLevel;
-            MoveSpeed = moveSpeed;
+
             JumpForce = jumpForce;
             IsJumping = isJumping;
             IsFacingRight = isFacingRight;
@@ -22,10 +22,11 @@ namespace Assets.Scripts
         }
 
         private int speedLevel;
+
         private int jumpLevel;
         public int CoinValue { get; set; }
-        public int SpeedLevel { get { return speedLevel; } set { speedLevel = value; MoveSpeed *= SpeedLevel; } }
-        public float MoveSpeed { get; private set; }
+        public int SpeedLevel { get { return speedLevel; } set { speedLevel = value; } }
+
         public float MoveHorizontal { get; set; }
         public float MoveVertical { get; set; }
         public int JumpLevel { get { return jumpLevel; } set { jumpLevel = value; JumpForce *= JumpLevel; } }

@@ -2,6 +2,7 @@ using Assets.Scripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem; 
 
 public class PlayerController : MonoBehaviour
 {
@@ -35,15 +36,30 @@ public class PlayerController : MonoBehaviour
     public string coinTag;
     public string goldTag;
     public string jumpUpgradeTag;
+
+    [Header("Moving")]
+    [SerializeField] float moveSpeed = 2.0f;
+    [SerializeField] float jumpForce = 2.0f;
+
+    
     protected Player player { get; private set; }
 
+
     // Start is called before the first frame update
+
+    void Awake()
+    {
+        Player newPlayer = new Player(0, 1, 0.2f, false, true, gameObject.GetComponent<Rigidbody2D>());
+        player = newPlayer; // tmp
+    }
+
     void Start()
     {
-        Player newPlayer = new Player(0, 1, 0.2f, 5.0f, false, true, gameObject.GetComponent<Rigidbody2D>());
-        player = newPlayer;
         
-    wallJumpTime = 0f;
+
+
+        
+        wallJumpTime = 0f;
         wallJumpBreakTime = 0f;
         wallSlideSpeed = 0.5f;
         wallDistance = 0.18f;
@@ -59,15 +75,31 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame  
     void Update()
     {
-        GetPlayerPosition();
-        RunAnimation(); 
+        // GetPlayerPosition();
+        // RunAnimation(); 
         // testing elements
         isFacingRight = player.IsFacingRight;
         isJumping = player.IsJumping;
         Vertical = player.MoveVertical;
-        VerticalSpeed = player.MoveSpeed;
     }
 
+    void OnMove(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            player.Rigidbody2D.velocity += new Vector2(moveSpeed, 0f); 
+        }
+    }
+
+    void OnJump(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            player.Rigidbody2D.velocity += new Vector2(0f, jumpForce); 
+        }
+    }
+
+    /*
     private void GetPlayerPosition()
     {
         player.MoveHorizontal = Input.GetAxisRaw("Horizontal"); // (-1, 0, 1)
@@ -86,10 +118,11 @@ public class PlayerController : MonoBehaviour
         MovePlayerHorizontal();
         MovePlayerVertical();
         FlipCheck();
-        IsCanJump();
+       //  IsCanJump();
         WallSlidingCheck();
         
     }
+
     private void MovePlayerHorizontal() {
         // split for Players
         if (player.MoveHorizontal > 0.1f || player.MoveHorizontal < -0.1f)
@@ -152,10 +185,7 @@ public class PlayerController : MonoBehaviour
         }
          // transform.position = new Vector2(transform.position.x, Mathf.Clamp(transform.position.y , wallSlideSpeed, float.MaxValue));
 
-        /* if (isWallSliding)    
-         {
-             player.Rigidbody2D.AddForce(new Vector2(0f, player.MoveVertical * (-1.0f)), ForceMode2D.Impulse);
-         }*/
+
     }
 
     private void IsCanJump()
@@ -219,17 +249,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(UnityEngine.Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag(coinTag))
-        {
-            /*Debug.Log("Gold");
-            isCollisionGold = true;
-            Application.Quit();*/
-
-        }
-    }
-
+    */
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject == GroundObject)
