@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
 {
     // to simplification
     [Header("Layers & Objects")]
-    public LayerMask GroundLayer;
     public LayerMask JumpUpgradeLayer;
     public LayerMask CoinLayer;
     public LayerMask GoldLayer;
@@ -19,8 +18,6 @@ public class PlayerController : MonoBehaviour
     public RaycastHit2D wallHitCheck;
     public float wallDistance;
     public bool isWallSliding;
-    public float jumpTime;
-    public float wallJumpTime;
     public float wallJumpBreakTime;
     public float wallSlideSpeed;
 
@@ -36,20 +33,30 @@ public class PlayerController : MonoBehaviour
     public string coinTag;
     public string goldTag;
     public string jumpUpgradeTag;
-
-    [Header("Moving")]
-    [SerializeField] float moveSpeed = 2.0f;
-    [SerializeField] float jumpForce = 2.0f;
-
-    
     protected Player player { get; private set; }
+
+
+    [Header("Move")]
+
+    [SerializeField] float moveSpeed = 2.0f;
+
+    [Header("Jump")]
+    [SerializeField] float jumpForce = 2.0f;
+    [SerializeField] float jumpWallTime = 1.0f;
+
+    [Header("Masks")]
+    [SerializeField] LayerMask groundLayer;
+    [SerializeField] bool isTouchingGround = false;
+
+
+
 
 
     // Start is called before the first frame update
 
     void Awake()
     {
-        Player newPlayer = new Player(0, 1, 0.2f, false, true, gameObject.GetComponent<Rigidbody2D>());
+        Player newPlayer = new Player(0, 1, 0.2f, false, true, gameObject.GetComponent<Rigidbody2D>(), gameObject.GetComponent<BoxCollider2D>());
         player = newPlayer; // tmp
     }
 
@@ -57,9 +64,6 @@ public class PlayerController : MonoBehaviour
     {
         
 
-
-        
-        wallJumpTime = 0f;
         wallJumpBreakTime = 0f;
         wallSlideSpeed = 0.5f;
         wallDistance = 0.18f;
@@ -83,20 +87,30 @@ public class PlayerController : MonoBehaviour
         Vertical = player.MoveVertical;
     }
 
-    void OnMove(InputValue value)
+    void OnJump(InputValue value)
     {
-        if (value.isPressed)
+        if (value.isPressed )
         {
-            player.Rigidbody2D.velocity += new Vector2(moveSpeed, 0f); 
+            if (!player.BoxCollider2D.IsTouchingLayers(groundLayer))
+            {
+                isTouchingGround = true;
+                player.Rigidbody2D.velocity += new Vector2(0f, jumpForce);
+            }
+            else
+            {
+                isTouchingGround = false;
+            }
         }
     }
 
-    void OnJump(InputValue value)
+    void OnMove(InputValue value)
     {
-        if (value.isPressed)
-        {
-            player.Rigidbody2D.velocity += new Vector2(0f, jumpForce); 
-        }
+        Run(value.Get<Vector2>());
+    }
+
+    void Run(Vector2 onMoveInputValue)
+    {
+        player.Rigidbody2D.velocity = new Vector2(onMoveInputValue.x * moveSpeed, player.Rigidbody2D.velocity.y);
     }
 
     /*
