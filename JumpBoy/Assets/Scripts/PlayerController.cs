@@ -1,8 +1,5 @@
-using Assets.Scripts;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -22,9 +19,7 @@ public class PlayerController : MonoBehaviour
     public float wallSlideSpeed;
 
     [Header("Player Test Values")]
-    public bool isJumping;
-    public bool isFacingRight;
-    public bool isCanJump;
+
     public float Vertical;
     public float VerticalSpeed;
     public int jumpTimeCounter;
@@ -33,45 +28,37 @@ public class PlayerController : MonoBehaviour
     public string coinTag;
     public string goldTag;
     public string jumpUpgradeTag;
-    protected Player player { get; private set; }
 
 
     [Header("Move")]
 
     [SerializeField] float moveSpeed = 2.0f;
+    [SerializeField] bool isFaceRight; 
 
     [Header("Jump")]
     [SerializeField] float jumpForce = 2.0f;
     [SerializeField] float jumpWallTime = 1.0f;
+    [SerializeField] bool isJump;
+    [SerializeField] bool isJumpPosible; 
+        
 
     [Header("Masks")]
     [SerializeField] LayerMask groundLayer;
-    [SerializeField] bool isTouchingGround = false;
+    [SerializeField] bool isTouchGround = false;
 
 
+    Rigidbody2D rigidbody2d; 
+    BoxCollider2D boxCollider2d; 
 
-
-
-    // Start is called before the first frame update
 
     void Awake()
     {
-        Player newPlayer = new Player(0, 1, 0.2f, false, true, gameObject.GetComponent<Rigidbody2D>(), gameObject.GetComponent<BoxCollider2D>());
-        player = newPlayer; // tmp
+        rigidbody2d = gameObject.GetComponent<Rigidbody2D>();
+        boxCollider2d = gameObject.GetComponent<BoxCollider2D>();
     }
 
     void Start()
     {
-        
-
-        wallJumpBreakTime = 0f;
-        wallSlideSpeed = 0.5f;
-        wallDistance = 0.18f;
-        isWallSliding = false;
-        isCanJump = false;
-        jumpTimeCounter = 0;
-        isCollisionGold = false;
-
 
 
     }
@@ -82,35 +69,49 @@ public class PlayerController : MonoBehaviour
         // GetPlayerPosition();
         // RunAnimation(); 
         // testing elements
-        isFacingRight = player.IsFacingRight;
-        isJumping = player.IsJumping;
-        Vertical = player.MoveVertical;
+
+
+
     }
 
     void OnJump(InputValue value)
     {
-        if (value.isPressed )
+        if (value.isPressed && !isJump)
         {
-            if (!player.BoxCollider2D.IsTouchingLayers(groundLayer))
+            if (boxCollider2d.IsTouchingLayers(groundLayer))
             {
-                isTouchingGround = true;
-                player.Rigidbody2D.velocity += new Vector2(0f, jumpForce);
+                // isTouchGround = false;
+                rigidbody2d.velocity += new Vector2(0f, jumpForce);
             }
             else
             {
-                isTouchingGround = false;
+                // isTouchGround = true;
             }
         }
     }
 
     void OnMove(InputValue value)
     {
+        
         Run(value.Get<Vector2>());
     }
 
     void Run(Vector2 onMoveInputValue)
     {
-        player.Rigidbody2D.velocity = new Vector2(onMoveInputValue.x * moveSpeed, player.Rigidbody2D.velocity.y);
+        rigidbody2d.velocity = new Vector2(onMoveInputValue.x * moveSpeed, rigidbody2d.velocity.y);
+        FlipCheck(); 
+    }
+
+    private void FlipCheck()
+    {
+        if (rigidbody2d.velocity.x > Mathf.Epsilon && isFaceRight == true) Flip();
+        else if (rigidbody2d.velocity.x < -Mathf.Epsilon && isFaceRight == false) Flip();
+    }
+
+    private void Flip()
+    {
+        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        isFaceRight = !isFaceRight;
     }
 
     /*
@@ -268,8 +269,9 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject == GroundObject)
         {
-            player.IsJumping = true;
+            isJump = false;
         }
+        else isJump = true;
     }
 }
 
