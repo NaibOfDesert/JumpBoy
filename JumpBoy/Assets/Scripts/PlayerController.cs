@@ -103,8 +103,11 @@ public class PlayerController : MonoBehaviour
     {
         rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
 
+
         bool platerHasHorizontalSpeed = Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon;
-        animator.SetBool("isRun", platerHasHorizontalSpeed);
+        animator.SetBool("isRun", !platerHasHorizontalSpeed);
+        
+
     }
 
     void Slide()
