@@ -31,16 +31,15 @@ public class PlayerController : MonoBehaviour
 
 
     [Header("Move")]
-
     [SerializeField] float moveSpeed = 2.0f;
-    [SerializeField] bool isFaceRight; 
-
+    [SerializeField] bool isFaceRight;
+    private Vector2 moveValue;
+    
     [Header("Jump")]
     [SerializeField] float jumpForce = 2.0f;
     [SerializeField] float jumpWallTime = 1.0f;
     [SerializeField] bool isJump;
-    [SerializeField] bool isJumpPosible; 
-        
+    [SerializeField] bool isJumpPosible;
 
     [Header("Masks")]
     [SerializeField] LayerMask groundLayer;
@@ -48,13 +47,16 @@ public class PlayerController : MonoBehaviour
 
 
     Rigidbody2D rigidbody2d; 
-    BoxCollider2D boxCollider2d; 
+    BoxCollider2D boxCollider2d;
+    Animator animator; 
+
 
 
     void Awake()
     {
         rigidbody2d = gameObject.GetComponent<Rigidbody2D>();
         boxCollider2d = gameObject.GetComponent<BoxCollider2D>();
+        animator = gameObject.GetComponent<Animator>();
     }
 
     void Start()
@@ -66,17 +68,15 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame  
     void Update()
     {
-        // GetPlayerPosition();
-        // RunAnimation(); 
-        // testing elements
-
-
-
+        Jump(); //--
+        FlipCheck();
+        Move();
+        Slide();
     }
 
     void OnJump(InputValue value)
     {
-        if (value.isPressed && !isJump)
+        if (value.isPressed)
         {
             if (boxCollider2d.IsTouchingLayers(groundLayer))
             {
@@ -85,21 +85,31 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                // isTouchGround = true;
+                return; // isTouchGround = true;
             }
         }
     }
 
+    void Jump()
+    {
+
+    }
     void OnMove(InputValue value)
     {
-        
-        Run(value.Get<Vector2>());
+        moveValue = value.Get<Vector2>();
     }
 
-    void Run(Vector2 onMoveInputValue)
+    void Move()
     {
-        rigidbody2d.velocity = new Vector2(onMoveInputValue.x * moveSpeed, rigidbody2d.velocity.y);
-        FlipCheck(); 
+        rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
+
+        bool platerHasHorizontalSpeed = Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon;
+        animator.SetBool("isRun", platerHasHorizontalSpeed);
+    }
+
+    void Slide()
+    {
+
     }
 
     private void FlipCheck()
@@ -156,17 +166,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void FlipCheck()
-    {
-        if (player.MoveHorizontal > 0.1f && player.IsFacingRight == false) Flip();
-        else if (player.MoveHorizontal < -0.1f && player.IsFacingRight == true) Flip();
-    }
 
-    private void Flip()
-    {
-        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        player.IsFacingRight = !player.IsFacingRight;
-    }
 
     // to simplification
     private void WallSlidingCheck()
