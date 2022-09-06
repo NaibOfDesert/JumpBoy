@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour
 
     // 
     [Header("Player Values")]
-    public RaycastHit2D wallHitCheck;
-    public float wallDistance;
+
+
     public bool isWallSliding;
     public float wallJumpBreakTime;
     public float wallSlideSpeed;
@@ -30,9 +30,14 @@ public class PlayerController : MonoBehaviour
     public string jumpUpgradeTag;
 
 
+
+    [Header("Player")]
+    [SerializeField] float standardGravityScale = 5.0f;
+    [SerializeField] public bool wallHitCheck;
+
     [Header("Move")]
     [SerializeField] float moveSpeed = 2.0f;
-    [SerializeField] bool isFaceRight;
+    [SerializeField] bool isFaceRight = true;
     private Vector2 moveValue;
     
     [Header("Jump")]
@@ -40,6 +45,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float jumpWallTime = 1.0f;
     [SerializeField] bool isJump;
     [SerializeField] bool isJumpPosible;
+    [SerializeField] float wallDistance;
 
     [Header("Masks")]
     [SerializeField] LayerMask groundLayer;
@@ -61,16 +67,18 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-
+        rigidbody2d.gravityScale = standardGravityScale; 
 
     }
 
     // Update is called once per frame  
     void Update()
     {
-        Jump(); //--
-        FlipCheck();
+        IsJump(); //--
+        WallHitCheck();
         Move();
+        FlipCheck();
+
         Slide();
     }
 
@@ -90,13 +98,28 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void Jump()
+    void IsJump()
     {
-
+        if (!boxCollider2d.IsTouchingLayers(groundLayer)) isJump = true;
+        else isJump = false;
     }
+
     void OnMove(InputValue value)
     {
         moveValue = value.Get<Vector2>();
+        if (moveValue.x < -Mathf.Epsilon)
+        {
+            wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, groundLayer);
+            Debug.DrawRay(transform.position, new Vector2(wallDistance, 0), Color.red);
+            isFaceRight = true;
+        }
+        else if (moveValue.x > Mathf.Epsilon)
+        {
+            isFaceRight = false;
+            wallHitCheck = Physics2D.Raycast(-transform.position, new Vector2(wallDistance, 0), wallDistance, groundLayer);
+            Debug.DrawRay(-transform.position, new Vector2(wallDistance, 0), Color.red);
+
+        }
     }
 
     void Move()
@@ -112,19 +135,36 @@ public class PlayerController : MonoBehaviour
 
     void Slide()
     {
+        if (isJump && wallHitCheck)
+        {
+            rigidbody2d.gravityScale = 2f;
+        }
+        else rigidbody2d.gravityScale = standardGravityScale; 
+    }
 
+    private void WallHitCheck()
+    {
+        if (isFaceRight)
+        {
+            wallHitCheck = Physics2D.Raycast(-transform.position, new Vector2(wallDistance, 0), wallDistance, groundLayer);
+            Debug.DrawRay(transform.position, new Vector2(wallDistance, 0), Color.red);
+        }
+        else if (!isFaceRight)
+        {
+            wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, groundLayer);
+            Debug.DrawRay(-transform.position, new Vector2(wallDistance, 0), Color.red);
+
+        }
     }
 
     private void FlipCheck()
     {
-        if (rigidbody2d.velocity.x > Mathf.Epsilon && isFaceRight == true) Flip();
-        else if (rigidbody2d.velocity.x < -Mathf.Epsilon && isFaceRight == false) Flip();
+        if ((isFaceRight && transform.localScale.x > Mathf.Epsilon) || (!isFaceRight && transform.localScale.x < -Mathf.Epsilon)) Flip();
     }
 
     private void Flip()
     {
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        isFaceRight = !isFaceRight;
     }
 
     /*
