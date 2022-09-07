@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Player Test Values")]
 
-    public float Vertical;
+    // [HideInInspector] public float Vertical;
     public float VerticalSpeed;
     public int jumpTimeCounter;
     public bool isCollisionGold;
@@ -29,11 +29,15 @@ public class PlayerController : MonoBehaviour
     public string goldTag;
     public string jumpUpgradeTag;
 
-
+    [Header("Rules")]
+    [SerializeField] float standardGravityScale = 5.0f;
+    [SerializeField] int jumpDistanceToDie = 10;
 
     [Header("Player")]
-    [SerializeField] float standardGravityScale = 5.0f;
     [SerializeField] public bool wallHitCheck;
+    [SerializeField] float wallDistance;
+    [SerializeField] int position;
+
 
     [Header("Move")]
     [SerializeField] float moveSpeed = 2.0f;
@@ -45,7 +49,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float jumpWallTime = 1.0f;
     [SerializeField] bool isJump;
     [SerializeField] bool isJumpPosible;
-    [SerializeField] float wallDistance;
+    [SerializeField] int jumpPosition = 0;
 
     [Header("Masks")]
     [SerializeField] LayerMask groundLayer;
@@ -67,19 +71,24 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        rigidbody2d.gravityScale = standardGravityScale; 
+        rigidbody2d.gravityScale = standardGravityScale;
+        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
 
     }
 
     // Update is called once per frame  
     void Update()
     {
-        IsJump(); //--
-        WallHitCheck();
+        position = (int)transform.position.y;
+
+        IsJump();
         Move();
         FlipCheck();
-
+        WallHitCheck();
+        IsWallSiliding();
         Slide();
+        AnimationSwitch();
     }
 
     void OnJump(InputValue value)
@@ -100,37 +109,31 @@ public class PlayerController : MonoBehaviour
 
     void IsJump()
     {
-        if (!boxCollider2d.IsTouchingLayers(groundLayer)) isJump = true;
+        if (!boxCollider2d.IsTouchingLayers(groundLayer)) 
+        { 
+            isJump = true;
+        }
         else isJump = false;
+        animator.SetBool("isJump", isJump);
     }
 
     void OnMove(InputValue value)
     {
         moveValue = value.Get<Vector2>();
-        if (moveValue.x < -Mathf.Epsilon)
+
+        if (moveValue.x > Mathf.Epsilon)
         {
-            wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, groundLayer);
-            Debug.DrawRay(transform.position, new Vector2(wallDistance, 0), Color.red);
             isFaceRight = true;
         }
-        else if (moveValue.x > Mathf.Epsilon)
+        else if (moveValue.x < -Mathf.Epsilon)
         {
             isFaceRight = false;
-            wallHitCheck = Physics2D.Raycast(-transform.position, new Vector2(wallDistance, 0), wallDistance, groundLayer);
-            Debug.DrawRay(-transform.position, new Vector2(wallDistance, 0), Color.red);
-
         }
     }
 
     void Move()
     {
         rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
-
-
-        bool platerHasHorizontalSpeed = Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon;
-        animator.SetBool("isRun", !platerHasHorizontalSpeed);
-        
-
     }
 
     void Slide()
@@ -146,20 +149,24 @@ public class PlayerController : MonoBehaviour
     {
         if (isFaceRight)
         {
-            wallHitCheck = Physics2D.Raycast(-transform.position, new Vector2(wallDistance, 0), wallDistance, groundLayer);
+            wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, groundLayer);
             Debug.DrawRay(transform.position, new Vector2(wallDistance, 0), Color.red);
         }
-        else if (!isFaceRight)
+        else 
         {
-            wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, groundLayer);
-            Debug.DrawRay(-transform.position, new Vector2(wallDistance, 0), Color.red);
-
+            wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(-wallDistance, 0), wallDistance, groundLayer);
+            Debug.DrawRay(transform.position, new Vector2(-wallDistance, 0), Color.red);
         }
     }
 
+    private void IsWallSiliding()
+    {
+        if (wallHitCheck && isJump) isWallSliding = true;
+        else isWallSliding = false;
+    }
     private void FlipCheck()
     {
-        if ((isFaceRight && transform.localScale.x > Mathf.Epsilon) || (!isFaceRight && transform.localScale.x < -Mathf.Epsilon)) Flip();
+        if ((!isFaceRight && transform.localScale.x > Mathf.Epsilon) || (isFaceRight && transform.localScale.x < -Mathf.Epsilon)) Flip();
     }
 
     private void Flip()
@@ -308,10 +315,35 @@ public class PlayerController : MonoBehaviour
     }
 
     */
+    private void Die()
+    {
+
+    }
+
+    private void AnimationSwitch()
+    {
+        bool platerHasHorizontalSpeed = Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon;
+        animator.SetBool("isRun", !platerHasHorizontalSpeed);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject == GroundObject)
+        {
+            if (Mathf.Abs((int)transform.position.y - jumpPosition) > jumpDistanceToDie)
+            {
+                Die();
+                Debug.Log("You died!!!");   
+                // restart game
+            }
+
+        }
+    }
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject == GroundObject)
         {
+            jumpPosition = (int)transform.position.y;
             isJump = false;
         }
         else isJump = true;
