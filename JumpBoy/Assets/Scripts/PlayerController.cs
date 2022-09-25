@@ -37,19 +37,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public bool wallHitCheck;
     [SerializeField] float wallDistance;
     [SerializeField] int position;
+    [SerializeField] bool isDead = false;
 
 
     [Header("Move")]
     [SerializeField] float moveSpeed = 2.0f;
     [SerializeField] bool isFaceRight = true;
+    [SerializeField] bool isMove = false;
     private Vector2 moveValue;
     
     [Header("Jump")]
     [SerializeField] float jumpForce = 2.0f;
     [SerializeField] float jumpWallTime = 1.0f;
     [SerializeField] bool isJump;
+    [SerializeField] bool isJumpFirst;
     [SerializeField] bool isJumpPosible;
     [SerializeField] int jumpPosition = 0;
+    [SerializeField] int jumpCount = 0;
 
     [Header("Masks")]
     [SerializeField] LayerMask groundLayer;
@@ -88,16 +92,18 @@ public class PlayerController : MonoBehaviour
         WallHitCheck();
         IsWallSiliding();
         Slide();
-        AnimationSwitch();
+        AnimationSwitch("isMovement");
+
     }
 
     void OnJump(InputValue value)
     {
         if (value.isPressed)
         {
-            if (boxCollider2d.IsTouchingLayers(groundLayer))
+            if (boxCollider2d.IsTouchingLayers(groundLayer) || isJumpFirst == true)
             {
                 // isTouchGround = false;
+                isJumpFirst = true;
                 rigidbody2d.velocity += new Vector2(0f, jumpForce);
             }
             else
@@ -109,12 +115,16 @@ public class PlayerController : MonoBehaviour
 
     void IsJump()
     {
-        if (!boxCollider2d.IsTouchingLayers(groundLayer)) 
-        { 
+        if (!boxCollider2d.IsTouchingLayers(groundLayer))
+        {
             isJump = true;
+
         }
-        else isJump = false;
-        animator.SetBool("isJump", isJump);
+        else
+        {
+            isJump = false;
+            isJumpFirst = false;
+        }
     }
 
     void OnMove(InputValue value)
@@ -124,16 +134,20 @@ public class PlayerController : MonoBehaviour
         if (moveValue.x > Mathf.Epsilon)
         {
             isFaceRight = true;
+
         }
         else if (moveValue.x < -Mathf.Epsilon)
         {
             isFaceRight = false;
         }
+
+
     }
 
     void Move()
     {
         rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
+        isMove = (Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon);
     }
 
     void Slide()
@@ -317,13 +331,33 @@ public class PlayerController : MonoBehaviour
     */
     private void Die()
     {
-
+        AnimationSwitch("isDie");
     }
 
-    private void AnimationSwitch()
+    private void AnimationSwitch(string value) // toRebuild
     {
-        bool platerHasHorizontalSpeed = Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon;
-        animator.SetBool("isRun", !platerHasHorizontalSpeed);
+        // Debug.Log(rigidbody2d.velocity.x + ", " + rigidbody2d.velocity.y);
+        switch (value)
+        {
+            case "isMovement":
+                {
+                    animator.SetBool("isRun", isMove);
+                    animator.SetBool("isJump", (isJump && (rigidbody2d.velocity.y > Mathf.Epsilon)));
+                    animator.SetBool("isFall", (isJump && (rigidbody2d.velocity.y < -Mathf.Epsilon)));
+
+                    break;
+                }
+            case "isDie":
+                {
+                    animator.SetBool("isDie", true);
+                    break;
+                } 
+            default:
+                break;
+        }
+
+
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -332,6 +366,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Mathf.Abs((int)transform.position.y - jumpPosition) > jumpDistanceToDie)
             {
+                isDead = true;
                 Die();
                 Debug.Log("You died!!!");   
                 // restart game
