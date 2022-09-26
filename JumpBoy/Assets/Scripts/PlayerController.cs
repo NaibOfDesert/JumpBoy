@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Rules")]
     [SerializeField] float standardGravityScale = 5.0f;
+    [SerializeField] float slidingGravityScale = 1.0f;
     [SerializeField] int jumpDistanceToDie = 10;
 
     [Header("Player")]
@@ -50,10 +51,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float jumpForce = 2.0f;
     [SerializeField] float jumpWallTime = 1.0f;
     [SerializeField] bool isJump;
-    [SerializeField] bool isJumpFirst;
     [SerializeField] bool isJumpPosible;
+    [SerializeField] bool isJumpFirst = false;
     [SerializeField] int jumpPosition = 0;
-    [SerializeField] int jumpCount = 0;
 
     [Header("Masks")]
     [SerializeField] LayerMask groundLayer;
@@ -100,15 +100,19 @@ public class PlayerController : MonoBehaviour
     {
         if (value.isPressed)
         {
-            if (boxCollider2d.IsTouchingLayers(groundLayer) || isJumpFirst == true)
+            if (boxCollider2d.IsTouchingLayers(groundLayer))
             {
-                // isTouchGround = false;
                 isJumpFirst = true;
                 rigidbody2d.velocity += new Vector2(0f, jumpForce);
             }
-            else
+            else if (!boxCollider2d.IsTouchingLayers(groundLayer) && isJumpFirst == true)
             {
-                return; // isTouchGround = true;
+                isJumpFirst = false;
+                rigidbody2d.velocity += new Vector2(0f, jumpForce);
+            }
+            else 
+            {
+                return; 
             }
         }
     }
@@ -123,7 +127,6 @@ public class PlayerController : MonoBehaviour
         else
         {
             isJump = false;
-            isJumpFirst = false;
         }
     }
 
@@ -152,9 +155,9 @@ public class PlayerController : MonoBehaviour
 
     void Slide()
     {
-        if (isJump && wallHitCheck)
+        if (isJump && wallHitCheck && (rigidbody2d.velocity.y < -Mathf.Epsilon))
         {
-            rigidbody2d.gravityScale = 2f;
+            rigidbody2d.gravityScale = slidingGravityScale;
         }
         else rigidbody2d.gravityScale = standardGravityScale; 
     }
@@ -331,7 +334,7 @@ public class PlayerController : MonoBehaviour
     */
     private void Die()
     {
-        AnimationSwitch("isDie");
+        AnimationSwitch("isDead");
     }
 
     private void AnimationSwitch(string value) // toRebuild
@@ -347,9 +350,9 @@ public class PlayerController : MonoBehaviour
 
                     break;
                 }
-            case "isDie":
+            case "isDead":
                 {
-                    animator.SetBool("isDie", true);
+                    animator.SetBool("isDead", true);
                     break;
                 } 
             default:
