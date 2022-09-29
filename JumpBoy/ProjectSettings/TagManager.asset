@@ -8,6 +8,7 @@ TagManager:
   - Coin
   - JumpUpgrade
   - Gold
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - JumpUpgrade
   - Gold
   - Background
-  - 
+  - SlidingWall
   - 
   - 
   - 
@@ -56,4 +57,7 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 731030811
+    locked: 0
+  - name: SlidingWall
+    uniqueID: 95576369
     locked: 0
