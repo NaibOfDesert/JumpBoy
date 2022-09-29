@@ -5,11 +5,11 @@ public class PlayerController : MonoBehaviour
 {
     // to simplification
     [Header("Layers & Objects")]
-    public LayerMask JumpUpgradeLayer;
-    public LayerMask CoinLayer;
-    public LayerMask GoldLayer;
-    public Object GroundObject;
-
+    [SerializeField] LayerMask JumpUpgradeLayer;
+    [SerializeField] LayerMask CoinLayer;
+    [SerializeField] LayerMask GoldLayer;
+    [SerializeField] Object GroundObject;
+    [SerializeField] Object SlidingObject; 
     // 
     [Header("Player Values")]
 
@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool isJump;
     [SerializeField] bool isJumpPosible;
     [SerializeField] bool isJumpFirst = false;
+    [SerializeField] bool isCanSlide; 
     [SerializeField] int jumpPosition = 0;
 
     [Header("Masks")]
@@ -62,15 +63,16 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody2D rigidbody2d; 
     BoxCollider2D boxCollider2d;
-    Animator animator; 
 
+    PlayerAnimations playerAnimations; 
 
 
     void Awake()
     {
         rigidbody2d = gameObject.GetComponent<Rigidbody2D>();
         boxCollider2d = gameObject.GetComponent<BoxCollider2D>();
-        animator = gameObject.GetComponent<Animator>();
+        playerAnimations = FindObjectOfType<PlayerAnimations>();
+
     }
 
     void Start()
@@ -78,43 +80,54 @@ public class PlayerController : MonoBehaviour
         rigidbody2d.gravityScale = standardGravityScale;
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 
-
+        // rigidbody2d.velocity = new Vector2(rigidbody2d.velocity.x + 2f, rigidbody2d.velocity.y);
     }
 
     // Update is called once per frame  
     void Update()
     {
-        position = (int)transform.position.y;
+        if (!isDead)
+        {
+            position = (int)transform.position.y;
 
-        IsJump();
-        Move();
-        FlipCheck();
-        WallHitCheck();
-        IsWallSiliding();
-        Slide();
-        AnimationSwitch("isMovement");
+            IsJump();
+            Move();
+            FlipCheck();
+            WallHitCheck();
+            IsWallSiliding();
+            Slide();
+            playerAnimations.AnimationSwitch("isMovement");
+        }
 
     }
-
+    
+    public Rigidbody2D GetRigidbody2D()
+    {
+        return rigidbody2d;
+    }
     void OnJump(InputValue value)
     {
-        if (value.isPressed)
+        if (!isDead)
         {
-            if (boxCollider2d.IsTouchingLayers(groundLayer))
+            if (value.isPressed)
             {
-                isJumpFirst = true;
-                rigidbody2d.velocity += new Vector2(0f, jumpForce);
-            }
-            else if (!boxCollider2d.IsTouchingLayers(groundLayer) && isJumpFirst == true)
-            {
-                isJumpFirst = false;
-                rigidbody2d.velocity += new Vector2(0f, jumpForce);
-            }
-            else 
-            {
-                return; 
+                if (boxCollider2d.IsTouchingLayers(groundLayer))
+                {
+                    isJumpFirst = true;
+                    rigidbody2d.velocity += new Vector2(0f, jumpForce);
+                }
+                else if (!boxCollider2d.IsTouchingLayers(groundLayer) && isJumpFirst == true)
+                {
+                    isJumpFirst = false;
+                    rigidbody2d.velocity += new Vector2(0f, jumpForce);
+                }
+                else
+                {
+                    return;
+                }
             }
         }
+        
     }
 
     void IsJump()
@@ -130,21 +143,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public bool GetIsJump()
+    {
+        return isJump; 
+    }
+
     void OnMove(InputValue value)
     {
-        moveValue = value.Get<Vector2>();
-
-        if (moveValue.x > Mathf.Epsilon)
+        if (!isDead)
         {
-            isFaceRight = true;
+            moveValue = value.Get<Vector2>();
 
+            if (moveValue.x > Mathf.Epsilon)
+            {
+                isFaceRight = true;
+
+            }
+            else if (moveValue.x < -Mathf.Epsilon)
+            {
+                isFaceRight = false;
+            }
         }
-        else if (moveValue.x < -Mathf.Epsilon)
-        {
-            isFaceRight = false;
-        }
-
-
     }
 
     void Move()
@@ -153,9 +172,14 @@ public class PlayerController : MonoBehaviour
         isMove = (Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon);
     }
 
+    public bool GetIsMove()
+    {
+        return isMove; 
+    }
+
     void Slide()
     {
-        if (isJump && wallHitCheck && (rigidbody2d.velocity.y < -Mathf.Epsilon))
+        if (isJump && wallHitCheck && (rigidbody2d.velocity.y < -Mathf.Epsilon) && isCanSlide)
         {
             rigidbody2d.gravityScale = slidingGravityScale;
         }
@@ -190,178 +214,12 @@ public class PlayerController : MonoBehaviour
     {
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
     }
-
-    /*
-    private void GetPlayerPosition()
-    {
-        player.MoveHorizontal = Input.GetAxisRaw("Horizontal"); // (-1, 0, 1)
-        player.MoveVertical = Input.GetAxisRaw("Vertical"); // (-1, 0, 1)
-        
-    }
-
-    // Update is called for physics changes
-    void FixedUpdate()
-    {
-        MovePlayer();
-    }
-
-    private void MovePlayer()
-    {
-        MovePlayerHorizontal();
-        MovePlayerVertical();
-        FlipCheck();
-       //  IsCanJump();
-        WallSlidingCheck();
-        
-    }
-
-    private void MovePlayerHorizontal() {
-        // split for Players
-        if (player.MoveHorizontal > 0.1f || player.MoveHorizontal < -0.1f)
-        {
-            player.Rigidbody2D.AddForce(new Vector2(player.MoveHorizontal * player.MoveSpeed, 0f), ForceMode2D.Impulse);
-        }
-
-    }  
-    
-    private void MovePlayerVertical() {
-        // split for Players
-        if (isCanJump && player.MoveVertical > 0.1f)
-        {
-            player.Rigidbody2D.AddForce(new Vector2(0f, player.MoveVertical * player.JumpForce), ForceMode2D.Impulse);
-
-        }
-    }
-
-
-
-    // to simplification
-    private void WallSlidingCheck()
-    {
-        if (player.IsFacingRight)
-        {
-            wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, GroundLayer);
-            // Debug.DrawRay(transform.position, new Vector2(wallDistance, 0), Color.red);
-        }
-        else
-        {
-            wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(-wallDistance, 0), wallDistance, GroundLayer);
-            // Debug.DrawRay(transform.position, new Vector2(-wallDistance, 0), Color.red);
-        }
-
-        if (wallHitCheck && player.IsJumping )
-        {
-            isWallSliding = true;
-        }
-        else isWallSliding = false;
-
-        if (isWallSliding) isCanJump = true;
-
-
-        if (isWallSliding && (player.MoveVertical < 0.1f || player.MoveVertical > -0.1f)) 
-        {
-            // TimeCheck();
-            // player.Rigidbody2D.AddForce(new Vector2(0f, player.MoveVertical * 0.5f), ForceMode2D.Impulse); 
-            player.Rigidbody2D.velocity = new Vector2(player.Rigidbody2D.velocity.x, Mathf.Clamp(player.Rigidbody2D.velocity.y, wallSlideSpeed, float.MaxValue));
-
-        }
-         // transform.position = new Vector2(transform.position.x, Mathf.Clamp(transform.position.y , wallSlideSpeed, float.MaxValue));
-
-
-    }
-
-    private void IsCanJump()
-    {
-        if (player.IsJumping) isCanJump = false;
-        else isCanJump = true;
-    }
-
-    private void TimeCheck()
-    {
-        if (wallJumpTime < 0.1)
-        {
-            isCanJump = true;
-            wallJumpTime += Time.deltaTime;
-            wallJumpBreakTime = 0;
-        }
-        else {
-            if (wallJumpBreakTime < 0.3)
-            {
-                isCanJump = false;
-                wallJumpBreakTime += Time.deltaTime;
-            }
-            else wallJumpTime = 0;
-        }
-            
-    }
-
-    private void RunAnimation()
-    {
-
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        // Ground Collision
-        if (collision.gameObject == GroundObject)
-        {
-            player.IsJumping = false;
-        }
-
-        // Coin Collision - adding Coin Value
-        if (collision.gameObject.CompareTag(coinTag))
-        {
-            Destroy(collision.gameObject);
-            player.CoinValue++;
-            Debug.Log(player.CoinValue);
-        }
-
-        // JumpUpgrade Collision - improve jump force
-        if (collision.gameObject.CompareTag(jumpUpgradeTag))
-        {
-            Destroy(collision.gameObject);
-            player.JumpLevel++;
-        }
-
-        // Gold Collision - quit game
-       if (collision.gameObject.CompareTag(goldTag))
-        {
-            isCollisionGold = true;
-            Application.Quit();
-
-        }
-    }
-
-    */
     private void Die()
     {
-        AnimationSwitch("isDead");
+        playerAnimations.AnimationSwitch("isDead");
     }
 
-    private void AnimationSwitch(string value) // toRebuild
-    {
-        // Debug.Log(rigidbody2d.velocity.x + ", " + rigidbody2d.velocity.y);
-        switch (value)
-        {
-            case "isMovement":
-                {
-                    animator.SetBool("isRun", isMove);
-                    animator.SetBool("isJump", (isJump && (rigidbody2d.velocity.y > Mathf.Epsilon)));
-                    animator.SetBool("isFall", (isJump && (rigidbody2d.velocity.y < -Mathf.Epsilon)));
-
-                    break;
-                }
-            case "isDead":
-                {
-                    animator.SetBool("isDead", true);
-                    break;
-                } 
-            default:
-                break;
-        }
-
-
-
-    }
+    
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -376,7 +234,27 @@ public class PlayerController : MonoBehaviour
             }
 
         }
+
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+
+        if (collision.gameObject == SlidingObject)
+        {
+            isCanSlide = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject == SlidingObject)
+        {
+            isCanSlide = false;
+        }
+    }
+
+
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject == GroundObject)
