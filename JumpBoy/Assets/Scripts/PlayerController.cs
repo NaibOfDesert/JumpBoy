@@ -135,7 +135,7 @@ public class PlayerController : MonoBehaviour
         if (!boxCollider2d.IsTouchingLayers(groundLayer))
         {
             isJump = true;
-
+            if(transform.position.y > jumpPosition) jumpPosition = (int)transform.position.y;
         }
         else
         {
@@ -202,7 +202,11 @@ public class PlayerController : MonoBehaviour
 
     private void IsWallSiliding()
     {
-        if (wallHitCheck && isJump) isWallSliding = true;
+        if (wallHitCheck && isJump) 
+        { 
+            isWallSliding = true;
+            jumpPosition = (int)transform.position.y;
+        }
         else isWallSliding = false;
     }
     private void FlipCheck()
@@ -225,7 +229,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject == GroundObject)
         {
-            if (Mathf.Abs((int)transform.position.y - jumpPosition) > jumpDistanceToDie)
+            if (((int)transform.position.y - jumpPosition) < -jumpDistanceToDie)
             {
                 isDead = true;
                 Die();
