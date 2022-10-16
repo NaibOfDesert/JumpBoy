@@ -64,14 +64,20 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rigidbody2d; 
     BoxCollider2D boxCollider2d;
 
-    PlayerAnimations playerAnimations; 
+    PlayerAnimations playerAnimations;
 
+    [Header("GloblLight")]
+    [SerializeField] GameObject globalLight;
+    LightController lightController;
+    
 
     void Awake()
     {
         rigidbody2d = gameObject.GetComponent<Rigidbody2D>();
         boxCollider2d = gameObject.GetComponent<BoxCollider2D>();
         playerAnimations = FindObjectOfType<PlayerAnimations>();
+        lightController = globalLight.GetComponent<LightController>();
+        
 
     }
 
@@ -220,6 +226,7 @@ public class PlayerController : MonoBehaviour
     }
     private void Die()
     {
+        lightController.SetLight("Dead");
         playerAnimations.AnimationSwitch("isDead");
     }
 

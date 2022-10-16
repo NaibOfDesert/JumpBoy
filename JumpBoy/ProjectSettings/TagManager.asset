@@ -9,6 +9,7 @@ TagManager:
   - JumpUpgrade
   - Gold
   - Ground
+  - Background
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Gold
   - Background
   - SlidingWall
-  - 
+  - BackgroundField
   - 
   - 
   - 
@@ -46,18 +47,21 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Environment
+    uniqueID: 809549603
+    locked: 0
   - name: Background
     uniqueID: 2621683573
     locked: 0
-  - name: Environment
-    uniqueID: 809549603
+  - name: Ground
+    uniqueID: 4119677683
+    locked: 0
+  - name: SlidingWall
+    uniqueID: 95576369
     locked: 0
   - name: Elements
     uniqueID: 775631327
     locked: 0
   - name: Player
     uniqueID: 731030811
-    locked: 0
-  - name: SlidingWall
-    uniqueID: 95576369
     locked: 0
