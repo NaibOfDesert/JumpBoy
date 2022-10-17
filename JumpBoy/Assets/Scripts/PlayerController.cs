@@ -69,7 +69,10 @@ public class PlayerController : MonoBehaviour
     [Header("GloblLight")]
     [SerializeField] GameObject globalLight;
     LightController lightController;
-    
+
+    [Header("MainAudioController")]
+    [SerializeField] GameObject audioController;
+    MainAudioController mainAudioController;
 
     void Awake()
     {
@@ -77,6 +80,7 @@ public class PlayerController : MonoBehaviour
         boxCollider2d = gameObject.GetComponent<BoxCollider2D>();
         playerAnimations = FindObjectOfType<PlayerAnimations>();
         lightController = globalLight.GetComponent<LightController>();
+        mainAudioController = audioController.GetComponent<MainAudioController>();
         
 
     }
@@ -176,6 +180,7 @@ public class PlayerController : MonoBehaviour
     {
         rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
         isMove = (Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon);
+        mainAudioController.PlayAudioEffect("move");
     }
 
     public bool GetIsMove()
