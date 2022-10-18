@@ -41,7 +41,7 @@ public class LightController : MonoBehaviour
         {
             case "Dead":
                 {
-                    // light.intensity = valueDead; // to rebuild
+                    light.intensity = valueDead;
                     break;
                 }
             default:

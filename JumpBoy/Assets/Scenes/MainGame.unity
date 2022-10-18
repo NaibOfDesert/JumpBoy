@@ -138,8 +138,10 @@ GameObject:
   - component: {fileID: 39772142}
   - component: {fileID: 39772143}
   - component: {fileID: 39772145}
+  - component: {fileID: 39772147}
   - component: {fileID: 39772141}
   - component: {fileID: 39772146}
+  - component: {fileID: 39772148}
   m_Layer: 7
   m_Name: JumpBoy
   m_TagString: Player
@@ -290,7 +292,6 @@ MonoBehaviour:
     m_Bits: 64
   isTouchGround: 0
   globalLight: {fileID: 2089445239}
-  audioController: {fileID: 1839813212}
 --- !u!70 &39772142
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -394,6 +395,120 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7f33216d4c2ef44289f37a7c434ccb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!82 &39772147
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 39772137}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 1f27dedb973d52c4e8f4ec84d58245e1, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &39772148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 39772137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6556cf9b108666459550804d16e3059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveClip: {fileID: 8300000, guid: 4f54065ba5bcdce47ae5e661bc8cfd77, type: 3}
+  moveVolume: 1
+  jumpClip: {fileID: 0}
+  jumpVolume: 1
+  deadClip: {fileID: 8300000, guid: e1d487546e83f54468d3c27308dba550, type: 3}
+  deadVolume: 1
 --- !u!1 &356923553
 GameObject:
   m_ObjectHideFlags: 0
@@ -16371,7 +16486,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1839813215}
   - component: {fileID: 1839813213}
-  - component: {fileID: 1839813214}
   m_Layer: 0
   m_Name: AudioGlobal
   m_TagString: Untagged
@@ -16475,20 +16589,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1839813214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1839813212}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44465d8dcee8a8c40a088bb810357583, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveClip: {fileID: 8300000, guid: 1f27dedb973d52c4e8f4ec84d58245e1, type: 3}
-  moveVolume: 1
 --- !u!4 &1839813215
 Transform:
   m_ObjectHideFlags: 0
