@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask CoinLayer;
     [SerializeField] LayerMask GoldLayer;
     [SerializeField] Object GroundObject;
-    [SerializeField] Object SlidingObject; 
+    [SerializeField] Object SlidingObject;
     // 
     [Header("Player Values")]
 
@@ -46,14 +46,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool isFaceRight = true;
     [SerializeField] bool isMove = false;
     private Vector2 moveValue;
-    
+
     [Header("Jump")]
     [SerializeField] float jumpForce = 2.0f;
     [SerializeField] float jumpWallTime = 1.0f;
     [SerializeField] bool isJump;
     [SerializeField] bool isJumpPosible;
     [SerializeField] bool isJumpFirst = false;
-    [SerializeField] bool isCanSlide; 
+    [SerializeField] bool isCanSlide;
     [SerializeField] int jumpPosition = 0;
 
     [Header("Masks")]
@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool isTouchGround = false;
 
 
-    Rigidbody2D rigidbody2d; 
+    Rigidbody2D rigidbody2d;
     BoxCollider2D boxCollider2d;
     PlayerAnimations playerAnimations;
     PlayerAudioController playerAudioController;
@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
         playerAnimations = FindObjectOfType<PlayerAnimations>();
         lightController = globalLight.GetComponent<LightController>();
         playerAudioController = FindObjectOfType<PlayerAudioController>();
-        
+
 
     }
 
@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-    
+
     public Rigidbody2D GetRigidbody2D()
     {
         return rigidbody2d;
@@ -134,15 +134,14 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-        
+
     }
 
     void IsJump()
     {
         if (!boxCollider2d.IsTouchingLayers(groundLayer))
         {
-            isJump = true;
-            if(transform.position.y > jumpPosition) jumpPosition = (int)transform.position.y;
+            if (transform.position.y > jumpPosition) jumpPosition = (int)transform.position.y;
         }
         else
         {
@@ -152,7 +151,7 @@ public class PlayerController : MonoBehaviour
 
     public bool GetIsJump()
     {
-        return isJump; 
+        return isJump;
     }
 
     void OnMove(InputValue value)
@@ -175,9 +174,13 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
-        isMove = (Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon);
-        playerAudioController.PlayAudioEffect("Move", (isMove && !isJump));
+        if (!(Mathf.Abs(rigidbody2d.velocity.y) > Mathf.Epsilon)) // to rebuild
+        {
+            rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
+            isMove = (Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon);
+            playerAudioController.PlayAudioEffect("Move", (isMove && !isJump));
+        }
+
     }
 
     public bool GetIsMove()
@@ -190,6 +193,7 @@ public class PlayerController : MonoBehaviour
         if (isJump && wallHitCheck && (rigidbody2d.velocity.y < -Mathf.Epsilon) && isCanSlide)
         {
             rigidbody2d.gravityScale = slidingGravityScale;
+            playerAudioController.PlayAudioEffect("Slide", true);
         }
         else rigidbody2d.gravityScale = standardGravityScale; 
     }
@@ -269,14 +273,16 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D collision) // is it neccessery?
     {
         if (collision.gameObject == GroundObject)
         {
             jumpPosition = (int)transform.position.y;
-            isJump = false;
+            isJump = true;
+            Debug.Log("OnTriggerExit2D jump = true");
+            playerAudioController.PlayAudioEffect("Jump", isJump);
+
         }
-        else isJump = true;
     }
 }
 

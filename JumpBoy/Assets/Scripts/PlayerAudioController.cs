@@ -39,20 +39,27 @@ public class PlayerAudioController : MonoBehaviour
             case "Move":
                 {
                     audioSource.clip = moveClip;
+                    audioSource.loop = true;
+                    audioSource.volume = moveVolume;
                     audioSource.enabled = able;
                     break;
                 }
 
             case "Jump":
                 {
-                    audioSource.clip = jumpClip;  
-                    audioSource.enabled = able;
+                    audioSource.clip = jumpClip;
+                    audioSource.loop = false;
+                    audioSource.volume = jumpVolume;
+                    audioSource.enabled = true;
+                    Debug.Log("jump sound on/off"); 
                     break;
                 }
 
             case "Slide":
                 {
                     audioSource.clip = slideClip;
+                    audioSource.loop = true;
+                    audioSource.volume = slideVolume;
                     audioSource.enabled = able;
                     break;
                 }
@@ -61,6 +68,7 @@ public class PlayerAudioController : MonoBehaviour
                 {
                     audioSource.clip = deadClip;
                     audioSource.loop = false;
+                    audioSource.volume = deadVolume;
                     audioSource.enabled = able;
                     break;
                 }
