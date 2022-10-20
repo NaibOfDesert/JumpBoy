@@ -174,12 +174,12 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        if (!(Mathf.Abs(rigidbody2d.velocity.y) > Mathf.Epsilon)) // to rebuild
-        {
+        // if (isJump && (Mathf.Abs(rigidbody2d.velocity.y) > Mathf.Epsilon)) // to rebuild
+        // {
             rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
             isMove = (Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon);
             playerAudioController.PlayAudioEffect("Move", (isMove && !isJump));
-        }
+        // }
 
     }
 
