@@ -12,9 +12,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Object SlidingObject;
     // 
     [Header("Player Values")]
-
-
-    public bool isWallSliding;
     public float wallJumpBreakTime;
     public float wallSlideSpeed;
 
@@ -35,10 +32,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int jumpDistanceToDie = 10;
 
     [Header("Player")]
-    [SerializeField] public bool wallHitCheck;
+    [SerializeField] bool isIdle = false; 
+    [SerializeField] bool wallHitCheck;
     [SerializeField] float wallDistance;
     [SerializeField] int position;
     [SerializeField] bool isDead = false;
+    [SerializeField] string movementStatus = "start"; 
+    [SerializeField] bool movementStatusChange; //--
 
 
     [Header("Move")]
@@ -50,11 +50,13 @@ public class PlayerController : MonoBehaviour
     [Header("Jump")]
     [SerializeField] float jumpForce = 2.0f;
     [SerializeField] float jumpWallTime = 1.0f;
-    [SerializeField] bool isJump;
+    [SerializeField] bool isJump = true;
     [SerializeField] bool isJumpPosible;
     [SerializeField] bool isJumpFirst = false;
     [SerializeField] bool isCanSlide;
     [SerializeField] int jumpPosition = 0;
+    [SerializeField] float jumpDistanceForce = 0;
+    [SerializeField] bool isWallSlide;
 
     [Header("Masks")]
     [SerializeField] LayerMask groundLayer;
@@ -97,11 +99,12 @@ public class PlayerController : MonoBehaviour
         {
             position = (int)transform.position.y;
 
+            IsIdle(); 
             IsJump();
             Move();
             FlipCheck();
             WallHitCheck();
-            IsWallSiliding();
+            IsWallSlide();
             Slide();
             playerAnimations.AnimationSwitch("isMovement");
         }
@@ -112,6 +115,23 @@ public class PlayerController : MonoBehaviour
     {
         return rigidbody2d;
     }
+
+    void IsIdle()
+    {
+        if(isMove || isJump || isWallSlide)
+        {
+            isIdle = false;
+
+        }
+        else
+        {
+            isIdle = true;
+            MovementStatusCheck("Idle");
+        }
+
+    }
+
+   
     void OnJump(InputValue value)
     {
         if (!isDead)
@@ -120,8 +140,10 @@ public class PlayerController : MonoBehaviour
             {
                 if (boxCollider2d.IsTouchingLayers(groundLayer))
                 {
+                   
                     isJumpFirst = true;
                     rigidbody2d.velocity += new Vector2(0f, jumpForce);
+
                 }
                 else if (!boxCollider2d.IsTouchingLayers(groundLayer) && isJumpFirst == true)
                 {
@@ -136,16 +158,16 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-
     void IsJump()
     {
         if (!boxCollider2d.IsTouchingLayers(groundLayer))
         {
             if (transform.position.y > jumpPosition) jumpPosition = (int)transform.position.y;
+            MovementStatusCheck("Jump");
         }
         else
         {
-            isJump = false;
+            //--
         }
     }
 
@@ -174,13 +196,17 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        // if (isJump && (Mathf.Abs(rigidbody2d.velocity.y) > Mathf.Epsilon)) // to rebuild
-        // {
+        if (!isJump)
+        {
             rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
-            isMove = (Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon);
-            playerAudioController.PlayAudioEffect("Move", (isMove && !isJump));
-        // }
-
+        }
+        else // to rebuild
+        {
+            //rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
+             rigidbody2d.velocity = new Vector2(rigidbody2d.velocity.x * jumpDistanceForce, rigidbody2d.velocity.y);
+        }
+        isMove = (Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon) && !isJump;
+        if(isMove) MovementStatusCheck("Move");
     }
 
     public bool GetIsMove()
@@ -193,11 +219,14 @@ public class PlayerController : MonoBehaviour
         if (isJump && wallHitCheck && (rigidbody2d.velocity.y < -Mathf.Epsilon) && isCanSlide)
         {
             rigidbody2d.gravityScale = slidingGravityScale;
-            playerAudioController.PlayAudioEffect("Slide", true);
         }
         else rigidbody2d.gravityScale = standardGravityScale; 
     }
 
+    public bool GetIsSlide()
+    {
+        return isWallSlide; 
+    }
     private void WallHitCheck()
     {
         if (isFaceRight)
@@ -212,20 +241,23 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void IsWallSiliding()
+    private void IsWallSlide()
     {
-        if (wallHitCheck && isJump) 
-        { 
-            isWallSliding = true;
-            jumpPosition = (int)transform.position.y;
+        if (wallHitCheck && isJump && isCanSlide)
+        {
+            isWallSlide = true;
+            MovementStatusCheck("Slide");
         }
-        else isWallSliding = false;
+        else 
+        { 
+            isWallSlide = false;
+        }
+
     }
     private void FlipCheck()
     {
         if ((!isFaceRight && transform.localScale.x > Mathf.Epsilon) || (isFaceRight && transform.localScale.x < -Mathf.Epsilon)) Flip();
     }
-
     private void Flip()
     {
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
@@ -234,15 +266,37 @@ public class PlayerController : MonoBehaviour
     {
         lightController.SetLight("Dead");
         playerAnimations.AnimationSwitch("isDead");
-        playerAudioController.PlayAudioEffect("Dead", true); 
+        MovementStatusCheck("Dead");
     }
-
-    
-
+    void MovementStatusCheck(string status)
+    {
+        if (movementStatus != status)
+        {
+            Debug.Log("movementStatus: " + movementStatus.ToString());
+            Debug.Log("status: " + status.ToString());
+            movementStatus = status;
+            movementStatusChange = true;
+            playerAudioController.PlayAudioEffect(movementStatus);
+        }
+        else
+        {
+            movementStatusChange = false;
+        }
+    }
+    public string GetMovementStatus()
+    {
+        return movementStatus;
+    }
+    public bool GetMovementStatusChange()
+    {
+        return movementStatusChange;
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject == GroundObject)
         {
+            isJump = false;
+
             if (((int)transform.position.y - jumpPosition) < -jumpDistanceToDie)
             {
                 isDead = true;
@@ -250,11 +304,15 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("You died!!!");   
                 // restart game
             }
-
+            else
+            {
+                // MovementStatusCheck("JumpEnd");
+                jumpDistanceForce = 0;
+                // Debug.Log("JumpEnd");
+            }
         }
 
     }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
 
@@ -273,16 +331,19 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void OnTriggerExit2D(Collider2D collision) // is it neccessery?
+    private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject == GroundObject)
         {
-            jumpPosition = (int)transform.position.y;
             isJump = true;
-            Debug.Log("OnTriggerExit2D jump = true");
-            playerAudioController.PlayAudioEffect("Jump", isJump);
+            MovementStatusCheck("Jump");
+            jumpPosition = (int)transform.position.y;
+            jumpDistanceForce = Mathf.Abs(moveValue.x);
+            // Debug.Log("OnTriggerExit2D JUMP EXIT");
+            // playerAudioController.PlayAudioEffect("Jump", isJump);
 
         }
     }
+    
 }
 

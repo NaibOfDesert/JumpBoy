@@ -134,8 +134,8 @@ GameObject:
   - component: {fileID: 39772139}
   - component: {fileID: 39772138}
   - component: {fileID: 39772140}
-  - component: {fileID: 39772144}
   - component: {fileID: 39772142}
+  - component: {fileID: 39772144}
   - component: {fileID: 39772143}
   - component: {fileID: 39772145}
   - component: {fileID: 39772147}
@@ -261,7 +261,6 @@ MonoBehaviour:
     m_Bits: 1024
   GroundObject: {fileID: 1472981101}
   SlidingObject: {fileID: 527427606}
-  isWallSliding: 0
   wallJumpBreakTime: 0
   wallSlideSpeed: 0
   VerticalSpeed: 0
@@ -273,10 +272,13 @@ MonoBehaviour:
   standardGravityScale: 5
   slidingGravityScale: 1
   jumpDistanceToDie: 10
+  isIdle: 0
   wallHitCheck: 0
   wallDistance: 0.41
   position: 0
   isDead: 0
+  movementStatus: 
+  movementStatusChange: 0
   moveSpeed: 8
   isFaceRight: 1
   isMove: 0
@@ -287,6 +289,8 @@ MonoBehaviour:
   isJumpFirst: 0
   isCanSlide: 0
   jumpPosition: 0
+  jumpDistanceForce: 0
+  isWallSlide: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -301,12 +305,12 @@ CapsuleCollider2D:
   m_GameObject: {fileID: 39772137}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_Material: {fileID: 6200000, guid: 30c8121f119a03749bb9589c1740c314, type: 2}
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.13300353, y: -0.6484969}
-  m_Size: {x: 0.50541043, y: 1.4470469}
+  m_Offset: {x: 0.12876606, y: -0.6915305}
+  m_Size: {x: 0.38958836, y: 1.4520622}
   m_Direction: 0
 --- !u!114 &39772143
 MonoBehaviour:
@@ -347,11 +351,11 @@ BoxCollider2D:
   m_GameObject: {fileID: 39772137}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 30c8121f119a03749bb9589c1740c314, type: 2}
-  m_IsTrigger: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.13275144, y: -0.64929605}
+  m_Offset: {x: 0.12750268, y: -0.6564776}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -362,7 +366,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.46198756, y: 1.4165092}
+  m_Size: {x: 0.4178996, y: 1.4377544}
   m_EdgeRadius: 0
 --- !u!95 &39772145
 Animator:
@@ -503,14 +507,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6556cf9b108666459550804d16e3059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  idleClip: {fileID: 8300000, guid: 1f27dedb973d52c4e8f4ec84d58245e1, type: 3}
+  idleVolume: 0.5
   moveClip: {fileID: 8300000, guid: 4f54065ba5bcdce47ae5e661bc8cfd77, type: 3}
-  moveVolume: 1
-  jumpClip: {fileID: 8300000, guid: d7b315bf25b7d564aa7d016422cd7dc3, type: 3}
-  jumpVolume: 1
+  moveVolume: 0.5
+  jumpClip: {fileID: 8300000, guid: 1f27dedb973d52c4e8f4ec84d58245e1, type: 3}
+  jumpVolume: 0.5
   slideClip: {fileID: 8300000, guid: 7d75840d3d515824ab735955007a30ec, type: 3}
   slideVolume: 1
   deadClip: {fileID: 8300000, guid: e1d487546e83f54468d3c27308dba550, type: 3}
-  deadVolume: 1
+  deadVolume: 0.4
 --- !u!1 &356923553
 GameObject:
   m_ObjectHideFlags: 0
@@ -2748,7 +2754,19 @@ MonoBehaviour:
     m_InheritPosition: 0
     m_OnCameraLive:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 39772137}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: 
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: 
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 864167764}
 --- !u!4 &1427332641
@@ -16507,7 +16525,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: a6b1dfb90b5b52b458e93aa20582fc2f, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 1
   Mute: 0

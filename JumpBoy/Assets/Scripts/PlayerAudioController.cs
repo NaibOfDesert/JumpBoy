@@ -5,6 +5,11 @@ using UnityEngine;
 public class PlayerAudioController : MonoBehaviour
 {
     AudioSource audioSource;
+    PlayerController playerController;
+
+    [Header("Idle")]
+    [SerializeField] AudioClip idleClip;
+    [SerializeField] [Range(0f, 1f)] float idleVolume = 1f;
 
     [Header("Move")]
     [SerializeField] AudioClip moveClip;
@@ -28,20 +33,40 @@ public class PlayerAudioController : MonoBehaviour
     void Awake()
     {
         audioSource = FindObjectOfType<AudioSource>();
+        playerController = FindObjectOfType<PlayerController>();
     }
 
-
-
-    public void PlayAudioEffect(string value, bool able)
+    void Update()
     {
+        /*
+        if (playerController.GetMovementStatusChange())
+        {
+            audioSource.enabled = false;
+            PlayAudioEffect(playerController.GetMovementStatus());
+            Debug.Log(playerController.GetMovementStatus());
+        }
+        */
+
+    }
+
+    public void PlayAudioEffect(string value)
+    {
+        audioSource.enabled = false;
         switch (value)
-        {   
+        {
+            case "Idle":
+                {
+                    audioSource.clip = idleClip;
+                    audioSource.loop = false;
+                    audioSource.volume = idleVolume;
+                    break;
+                }
+
             case "Move":
                 {
                     audioSource.clip = moveClip;
                     audioSource.loop = true;
                     audioSource.volume = moveVolume;
-                    audioSource.enabled = able;
                     break;
                 }
 
@@ -50,8 +75,14 @@ public class PlayerAudioController : MonoBehaviour
                     audioSource.clip = jumpClip;
                     audioSource.loop = false;
                     audioSource.volume = jumpVolume;
-                    audioSource.enabled = true;
-                    Debug.Log("jump sound on/off"); 
+                    break;
+                }
+
+            case "JumpEnd":
+                {
+                    audioSource.clip = jumpClip;
+                    audioSource.loop = false;
+                    audioSource.volume = jumpVolume;
                     break;
                 }
 
@@ -60,7 +91,6 @@ public class PlayerAudioController : MonoBehaviour
                     audioSource.clip = slideClip;
                     audioSource.loop = true;
                     audioSource.volume = slideVolume;
-                    audioSource.enabled = able;
                     break;
                 }
 
@@ -69,7 +99,6 @@ public class PlayerAudioController : MonoBehaviour
                     audioSource.clip = deadClip;
                     audioSource.loop = false;
                     audioSource.volume = deadVolume;
-                    audioSource.enabled = able;
                     break;
                 }
 
@@ -78,6 +107,8 @@ public class PlayerAudioController : MonoBehaviour
                     break;
                 }
         }
+
+        audioSource.enabled = true;
 
     }
 
