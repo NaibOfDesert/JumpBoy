@@ -10,6 +10,8 @@ TagManager:
   - Gold
   - Ground
   - Background
+  - Enemy
+  - EnemyPlatform
   layers:
   - Default
   - TransparentFX
@@ -25,8 +27,8 @@ TagManager:
   - Background
   - SlidingWall
   - BackgroundField
-  - 
-  - 
+  - Enemy
+  - EnemyPlatform
   - 
   - 
   - 
@@ -62,6 +64,12 @@ TagManager:
   - name: Elements
     uniqueID: 775631327
     locked: 0
+  - name: Enemy
+    uniqueID: 4257641395
+    locked: 0
   - name: Player
     uniqueID: 731030811
+    locked: 0
+  - name: EnemyPlatform
+    uniqueID: 119079943
     locked: 0

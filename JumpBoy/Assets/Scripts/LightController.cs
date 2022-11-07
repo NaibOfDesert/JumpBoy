@@ -13,11 +13,11 @@ public class LightController : MonoBehaviour
 
     [SerializeField] float valueDead;
 
-    Light2D light; 
+    Light2D light2D; 
   
     void Awake()
     {
-        light = gameObject.GetComponent<Light2D>();
+        light2D = gameObject.GetComponent<Light2D>();
     }
 
     // Update is called once per frame
@@ -26,11 +26,11 @@ public class LightController : MonoBehaviour
     {
         if (isLightChange)
         {
-            if (light.lightType == Light2D.LightType.Point)
+            if (light2D.lightType == Light2D.LightType.Point)
             {
-                light.pointLightInnerRadius = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxRange / 2);
-                light.pointLightOuterRadius = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxRange);
-                light.intensity = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxIntensity);
+                light2D.pointLightInnerRadius = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxRange / 2);
+                light2D.pointLightOuterRadius = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxRange);
+                light2D.intensity = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxIntensity);
 
             }
         }
@@ -41,7 +41,7 @@ public class LightController : MonoBehaviour
         {
             case "Dead":
                 {
-                    light.intensity = valueDead;
+                    light2D.intensity = valueDead;
                     break;
                 }
             default:

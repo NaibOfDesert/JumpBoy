@@ -38,7 +38,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int position;
     [SerializeField] bool isDead = false;
     [SerializeField] string movementStatus = "start"; 
-    [SerializeField] bool movementStatusChange; //--
+    [SerializeField] bool movementStatusChange;
+    [SerializeField] GameObject enemyObject; 
 
 
     [Header("Move")]
@@ -80,16 +81,12 @@ public class PlayerController : MonoBehaviour
         playerAnimations = FindObjectOfType<PlayerAnimations>();
         lightController = globalLight.GetComponent<LightController>();
         playerAudioController = FindObjectOfType<PlayerAudioController>();
-
-
     }
 
     void Start()
     {
         rigidbody2d.gravityScale = standardGravityScale;
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-
-        // rigidbody2d.velocity = new Vector2(rigidbody2d.velocity.x + 2f, rigidbody2d.velocity.y);
     }
 
     // Update is called once per frame  
@@ -130,8 +127,6 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-
-   
     void OnJump(InputValue value)
     {
         if (!isDead)
@@ -175,7 +170,10 @@ public class PlayerController : MonoBehaviour
     {
         return isJump;
     }
-
+    public int GetPosition()
+    {
+        return position; 
+    }
     void OnMove(InputValue value)
     {
         if (!isDead)
@@ -196,15 +194,7 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        if (!isJump)
-        {
-            rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
-        }
-        else // to rebuild
-        {
-            //rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
-             rigidbody2d.velocity = new Vector2(rigidbody2d.velocity.x * jumpDistanceForce, rigidbody2d.velocity.y);
-        }
+        rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
         isMove = (Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon) && !isJump;
         if(isMove) MovementStatusCheck("Move");
     }
@@ -264,6 +254,7 @@ public class PlayerController : MonoBehaviour
     }
     private void Die()
     {
+        isDead = true;
         lightController.SetLight("Dead");
         playerAnimations.AnimationSwitch("isDead");
         MovementStatusCheck("Dead");
@@ -299,26 +290,27 @@ public class PlayerController : MonoBehaviour
 
             if (((int)transform.position.y - jumpPosition) < -jumpDistanceToDie)
             {
-                isDead = true;
                 Die();
                 Debug.Log("You died!!!");   
                 // restart game
             }
             else
             {
-                // MovementStatusCheck("JumpEnd");
                 jumpDistanceForce = 0;
-                // Debug.Log("JumpEnd");
             }
         }
 
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-
         if (collision.gameObject == SlidingObject)
         {
             isCanSlide = true;
+        }
+
+        if (collision.gameObject == enemyObject)
+        {
+            Die();
         }
     }
 
@@ -339,9 +331,6 @@ public class PlayerController : MonoBehaviour
             MovementStatusCheck("Jump");
             jumpPosition = (int)transform.position.y;
             jumpDistanceForce = Mathf.Abs(moveValue.x);
-            // Debug.Log("OnTriggerExit2D JUMP EXIT");
-            // playerAudioController.PlayAudioEffect("Jump", isJump);
-
         }
     }
     
