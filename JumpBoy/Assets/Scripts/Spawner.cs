@@ -27,7 +27,7 @@ public class Spawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        spawnInterval = (1 / playerController.GetPosition()) * 100; 
+        spawnInterval = (1 / playerController.GetPosition()) * spawnCount; 
     }
 
     private IEnumerator SpawnObject(float interval, GameObject spawnObject, Vector3 spawnPlace)
