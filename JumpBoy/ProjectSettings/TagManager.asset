@@ -73,3 +73,6 @@ TagManager:
   - name: EnemyPlatform
     uniqueID: 119079943
     locked: 0
+  - name: UI
+    uniqueID: 2627956371
+    locked: 0

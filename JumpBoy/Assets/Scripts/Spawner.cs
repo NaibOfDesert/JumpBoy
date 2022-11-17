@@ -32,7 +32,7 @@ public class Spawner : MonoBehaviour
 
     private IEnumerator SpawnObject(float interval, GameObject spawnObject, Vector3 spawnPlace)
     {
-        spawnFiled = new Vector3(Random.Range(2f, 3f), 1f, 0); 
+        spawnFiled = new Vector3(Random.Range(2f, 3f), 100f, 0); 
         GameObject newObject = Instantiate(spawnPrefab, spawnFiled, Quaternion.identity);
         yield return new WaitForSeconds(interval * Time.time * Time.deltaTime);
         StartCoroutine(SpawnObject(spawnInterval, spawnPrefab, spawnFiled));
