@@ -259,6 +259,11 @@ public class PlayerController : MonoBehaviour
         playerAnimations.AnimationSwitch("isDead");
         MovementStatusCheck("Dead");
     }
+
+    public bool IsDead()
+    {
+        return isDead;
+    }
     void MovementStatusCheck(string status)
     {
         if (movementStatus != status)

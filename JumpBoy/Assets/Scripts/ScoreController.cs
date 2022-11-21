@@ -8,7 +8,9 @@ public class ScoreController : MonoBehaviour
 {
     [SerializeField] PlayerController playerController;
     [SerializeField] TextMeshProUGUI scoreText;
-    
+
+
+
     void Update()
     {
         scoreText.text = playerController.GetPosition().ToString();

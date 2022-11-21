@@ -4,17 +4,19 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    [Header("Enemy")]
-    [SerializeField] bool wallHitCheck;
-    [SerializeField] float wallDistance;
+    [Header("Player")]
+    [SerializeField] PlayerController playerController;
 
-    [Header("Move")]
-    [SerializeField] float moveSpeed = 2.0f;
-    [SerializeField] bool isFaceRight = true;
+    [Header("Movement")]
+    [SerializeField] int enemyDelay;
 
-    [Header("Masks")]
-    [SerializeField] LayerMask groundLayer;
+    Rigidbody2D rigidbody2d;
 
+    private void Awake()
+    {
+        rigidbody2d = gameObject.GetComponent<Rigidbody2D>();
+
+    }
     void Start()
     {
         
@@ -23,32 +25,11 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        FlipCheck();
-
-    }
-
-
-
-    private void WallHitCheck()
-    {
-        if (isFaceRight)
+        if(enemyDelay != 0)
         {
-            wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, groundLayer);
-            Debug.DrawRay(transform.position, new Vector2(wallDistance, 0), Color.red);
-        }
-        else
-        {
-            wallHitCheck = Physics2D.Raycast(transform.position, new Vector2(-wallDistance, 0), wallDistance, groundLayer);
-            Debug.DrawRay(transform.position, new Vector2(-wallDistance, 0), Color.red);
+            if (!playerController.IsDead()) rigidbody2d.velocity = new Vector2(0, playerController.GetPosition() / enemyDelay);
+            else rigidbody2d.velocity = new Vector2(0, 0);
         }
     }
 
-    private void FlipCheck()
-    {
-        if ((!isFaceRight && transform.localScale.x > Mathf.Epsilon) || (isFaceRight && transform.localScale.x < -Mathf.Epsilon)) Flip();
-    }
-    private void Flip()
-    {
-        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-    }
 }
