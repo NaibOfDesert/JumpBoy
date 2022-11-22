@@ -11,10 +11,12 @@ public class EnemyController : MonoBehaviour
     [SerializeField] int enemyDelay;
 
     Rigidbody2D rigidbody2d;
+    AudioSource audioSource; 
 
     private void Awake()
     {
         rigidbody2d = gameObject.GetComponent<Rigidbody2D>();
+        audioSource = gameObject.GetComponent<AudioSource>();
 
     }
     void Start()
@@ -27,7 +29,13 @@ public class EnemyController : MonoBehaviour
     {
         if(enemyDelay != 0)
         {
-            if (!playerController.IsDead()) rigidbody2d.velocity = new Vector2(0, playerController.GetPosition() / enemyDelay);
+            if (!playerController.IsDead())
+            {
+
+                rigidbody2d.velocity = new Vector2(0, playerController.GetPosition() / enemyDelay);
+                audioSource.volume = transform.position.y/(playerController.GetPosition()*2);  
+            }
+
             else rigidbody2d.velocity = new Vector2(0, 0);
         }
     }
