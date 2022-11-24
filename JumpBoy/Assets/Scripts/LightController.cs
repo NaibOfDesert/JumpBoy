@@ -28,9 +28,9 @@ public class LightController : MonoBehaviour
         {
             if (light2D.lightType == Light2D.LightType.Point)
             {
-                light2D.pointLightInnerRadius = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxRange / 2);
-                light2D.pointLightOuterRadius = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxRange);
-                light2D.intensity = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxIntensity);
+                // light2D.pointLightInnerRadius = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxRange);
+                // light2D.pointLightOuterRadius = Mathf.PingPong(Time.time * lightChangeSpeed, (lightMaxRange + 1));
+                light2D.intensity = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxRange);
 
             }
         }

@@ -12,6 +12,7 @@ TagManager:
   - Background
   - Enemy
   - EnemyPlatform
+  - Light
   layers:
   - Default
   - TransparentFX
@@ -75,4 +76,7 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 2627956371
+    locked: 0
+  - name: Light
+    uniqueID: 4029585467
     locked: 0

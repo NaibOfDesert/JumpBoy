@@ -17,27 +17,17 @@ public class EnemyController : MonoBehaviour
     {
         rigidbody2d = gameObject.GetComponent<Rigidbody2D>();
         audioSource = gameObject.GetComponent<AudioSource>();
-
-    }
-    void Start()
-    {
-        
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(enemyDelay != 0)
         {
             if (!playerController.IsDead())
             {
-
-                rigidbody2d.velocity = new Vector2(0, playerController.GetPosition() / enemyDelay);
-                audioSource.volume = transform.position.y/(playerController.GetPosition()*2);  
+                rigidbody2d.velocity = new Vector2(0, Mathf.Sqrt(playerController.GetPosition()));
+                audioSource.volume = transform.position.y/(playerController.GetPosition()*5);  
             }
-
-            else rigidbody2d.velocity = new Vector2(0, 0);
         }
     }
-
 }
