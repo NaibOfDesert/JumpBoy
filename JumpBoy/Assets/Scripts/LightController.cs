@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.Universal;
+
 
 public class LightController : MonoBehaviour
 {
@@ -13,11 +13,11 @@ public class LightController : MonoBehaviour
 
     [SerializeField] float valueDead;
 
-    Light2D light2D; 
+    UnityEngine.Rendering.Universal.Light2D light2D; 
   
     void Awake()
     {
-        light2D = gameObject.GetComponent<Light2D>();
+        light2D = gameObject.GetComponent<UnityEngine.Rendering.Universal.Light2D>();
     }
 
     // Update is called once per frame
@@ -26,7 +26,7 @@ public class LightController : MonoBehaviour
     {
         if (isLightChange)
         {
-            if (light2D.lightType == Light2D.LightType.Point)
+            if (light2D.lightType == UnityEngine.Rendering.Universal.Light2D.LightType.Point)
             {
                 // light2D.pointLightInnerRadius = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxRange);
                 // light2D.pointLightOuterRadius = Mathf.PingPong(Time.time * lightChangeSpeed, (lightMaxRange + 1));

@@ -255,7 +255,7 @@ TextureImporter:
       213: 7015558376016952291
     second: Spider Tile Set_83
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -276,6 +276,7 @@ TextureImporter:
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -284,9 +285,9 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -314,6 +315,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -329,6 +331,30 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -2116,6 +2142,91 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      Spider Tile Set_68: 7056866246697191702
+      Spider Tile Set_61: -8988375507248950993
+      Spider Tile Set_24: 5529586785402073158
+      Spider Tile Set_3: 4512983958708952020
+      Spider Tile Set_8: -1921376931958177489
+      Spider Tile Set_76: -7654365617927787316
+      Spider Tile Set_28: -3675394402537211019
+      Spider Tile Set_55: 3823968968105465856
+      Spider Tile Set_5: -4066763543840350904
+      Spider Tile Set_40: -5524678147084532182
+      Spider Tile Set_4: 2312870520892918362
+      Spider Tile Set_10: -8950454500302273855
+      Spider Tile Set_78: 1754716539446044634
+      Spider Tile Set_41: 6548702029679230222
+      Spider Tile Set_54: 1788345897297435464
+      Spider Tile Set_45: -2872645982848528295
+      Spider Tile Set_23: 4531163984782769938
+      Spider Tile Set_64: -8857490914975869044
+      Spider Tile Set_52: 6721154541455585860
+      Spider Tile Set_70: 4767132011412837348
+      Spider Tile Set_42: 2607337266231775871
+      Spider Tile Set_50: -1696958538376516801
+      Spider Tile Set_2: 728264592962878945
+      Spider Tile Set_51: 6390647551900244919
+      Spider Tile Set_81: -3355295982857982321
+      Spider Tile Set_79: 8609541499543101200
+      Spider Tile Set_46: -835966413794058434
+      Spider Tile Set_66: 825113470752316961
+      Spider Tile Set_36: 7673886788462902557
+      Spider Tile Set_74: -7639282568031943805
+      Spider Tile Set_48: -5526326772647706443
+      Spider Tile Set_60: 8178370385339998229
+      Spider Tile Set_71: -3490383268204859521
+      Spider Tile Set_9: 5065494679404743573
+      Spider Tile Set_53: 5538865863805948743
+      Spider Tile Set_58: -2131785814920767757
+      Spider Tile Set_18: 4883207771837413429
+      Spider Tile Set_57: 9187595663984844143
+      Spider Tile Set_33: -1623902428665297045
+      Spider Tile Set_32: -7896085329217634462
+      Spider Tile Set_38: 3382329967784558680
+      Spider Tile Set_25: -7265419403115624601
+      Spider Tile Set_43: 6868030840595176199
+      Spider Tile Set_59: 2883494640500088560
+      Spider Tile Set_65: 9087288635830598348
+      Spider Tile Set_11: 4791667650650357447
+      Spider Tile Set_83: 7015558376016952291
+      Spider Tile Set_0: 2874787458709476839
+      Spider Tile Set_21: 6054340995637704315
+      Spider Tile Set_20: -712277452698478235
+      Spider Tile Set_80: 6925969494302356811
+      Spider Tile Set_34: -1565775395929049786
+      Spider Tile Set_82: -7109712513876586283
+      Spider Tile Set_30: -5736071353867675331
+      Spider Tile Set_37: -5624880272440043235
+      Spider Tile Set_44: 5986627154238647442
+      Spider Tile Set_26: -5380837513430433125
+      Spider Tile Set_15: 1880438269443324726
+      Spider Tile Set_49: -7821005418015673499
+      Spider Tile Set_77: -5572069994685323068
+      Spider Tile Set_12: 1047314227805646945
+      Spider Tile Set_73: -7527584871764005274
+      Spider Tile Set_69: 7177285403058048992
+      Spider Tile Set_75: 2738453437665049005
+      Spider Tile Set_31: 766312627518602641
+      Spider Tile Set_6: -1669426451560799366
+      Spider Tile Set_14: -2384643601215520978
+      Spider Tile Set_27: 3954333131908880409
+      Spider Tile Set_56: 7669376282193914941
+      Spider Tile Set_67: 1047389631439242783
+      Spider Tile Set_72: -3979259879427633235
+      Spider Tile Set_1: 1403942483449359967
+      Spider Tile Set_47: 4660839724619460702
+      Spider Tile Set_35: -3116119003768348810
+      Spider Tile Set_62: 2751660981467133027
+      Spider Tile Set_63: 6889767557943844926
+      Spider Tile Set_7: 8263368997039802289
+      Spider Tile Set_17: -6975030295551487342
+      Spider Tile Set_29: -3848814348480530635
+      Spider Tile Set_39: 9062278497413672012
+      Spider Tile Set_13: 6521841316123579735
+      Spider Tile Set_16: -9049465554922379621
+      Spider Tile Set_19: 5617731897109021539
+      Spider Tile Set_22: 6256459704117727311
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
