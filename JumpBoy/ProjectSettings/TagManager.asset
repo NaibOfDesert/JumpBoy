@@ -9,6 +9,10 @@ TagManager:
   - JumpUpgrade
   - Gold
   - Ground
+  - Background
+  - Enemy
+  - EnemyPlatform
+  - Light
   layers:
   - Default
   - TransparentFX
@@ -23,9 +27,9 @@ TagManager:
   - Gold
   - Background
   - SlidingWall
-  - 
-  - 
-  - 
+  - BackgroundField
+  - Enemy
+  - EnemyPlatform
   - 
   - 
   - 
@@ -46,18 +50,33 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Environment
+    uniqueID: 809549603
+    locked: 0
   - name: Background
     uniqueID: 2621683573
     locked: 0
-  - name: Environment
-    uniqueID: 809549603
+  - name: EnemyPlatform
+    uniqueID: 119079943
     locked: 0
   - name: Elements
     uniqueID: 775631327
     locked: 0
-  - name: Player
-    uniqueID: 731030811
+  - name: Enemy
+    uniqueID: 4257641395
+    locked: 0
+  - name: Ground
+    uniqueID: 4119677683
     locked: 0
   - name: SlidingWall
     uniqueID: 95576369
+    locked: 0
+  - name: Player
+    uniqueID: 731030811
+    locked: 0
+  - name: UI
+    uniqueID: 2627956371
+    locked: 0
+  - name: Light
+    uniqueID: 4029585467
     locked: 0
