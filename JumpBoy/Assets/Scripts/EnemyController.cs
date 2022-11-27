@@ -9,6 +9,7 @@ public class EnemyController : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] int enemyDelay;
+    [SerializeField] int enemySound;
 
     Rigidbody2D rigidbody2d;
     AudioSource audioSource; 
@@ -23,10 +24,14 @@ public class EnemyController : MonoBehaviour
     {
         if(enemyDelay != 0)
         {
+            audioSource.volume = transform.position.y / (playerController.GetPosition() * enemySound);
             if (!playerController.IsDead())
             {
-                rigidbody2d.velocity = new Vector2(0, Mathf.Sqrt(playerController.GetPosition()));
-                audioSource.volume = transform.position.y/(playerController.GetPosition()*5);  
+                rigidbody2d.velocity = new Vector2(0, Mathf.Sqrt(playerController.GetPosition() / enemyDelay));
+            }
+            else
+            {
+                rigidbody2d.velocity = new Vector2(0, 0);
             }
         }
     }

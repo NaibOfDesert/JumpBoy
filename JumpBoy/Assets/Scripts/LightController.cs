@@ -2,15 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class LightController : MonoBehaviour
 {
     [SerializeField] bool isLightChange;
-    // [SerializeField] float lightStartColor;
     [SerializeField] float lightMaxIntensity;
     [SerializeField] float lightMaxRange;
     [SerializeField] float lightChangeSpeed;
-
     [SerializeField] float valueDead;
 
     UnityEngine.Rendering.Universal.Light2D light2D; 
@@ -19,19 +16,13 @@ public class LightController : MonoBehaviour
     {
         light2D = gameObject.GetComponent<UnityEngine.Rendering.Universal.Light2D>();
     }
-
-    // Update is called once per frame
-
     void Update()
     {
         if (isLightChange)
         {
             if (light2D.lightType == UnityEngine.Rendering.Universal.Light2D.LightType.Point)
             {
-                // light2D.pointLightInnerRadius = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxRange);
-                // light2D.pointLightOuterRadius = Mathf.PingPong(Time.time * lightChangeSpeed, (lightMaxRange + 1));
                 light2D.intensity = Mathf.PingPong(Time.time * lightChangeSpeed, lightMaxRange);
-
             }
         }
     }
@@ -49,6 +40,5 @@ public class LightController : MonoBehaviour
                     break;
                 }
         }
-
     }
 }

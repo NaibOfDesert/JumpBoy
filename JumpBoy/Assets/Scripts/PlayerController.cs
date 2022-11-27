@@ -1,46 +1,42 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    // to simplification
     [Header("Layers & Objects")]
     [SerializeField] LayerMask JumpUpgradeLayer;
     [SerializeField] LayerMask CoinLayer;
     [SerializeField] LayerMask GoldLayer;
     [SerializeField] Object GroundObject;
     [SerializeField] Object SlidingObject;
-    // 
+
     [Header("Player Values")]
     public float wallJumpBreakTime;
     public float wallSlideSpeed;
 
     [Header("Player Test Values")]
-
-    // [HideInInspector] public float Vertical;
     public float VerticalSpeed;
     public int jumpTimeCounter;
     public bool isCollisionGold;
-
-    public string coinTag;
-    public string goldTag;
-    public string jumpUpgradeTag;
 
     [Header("Rules")]
     [SerializeField] float standardGravityScale = 5.0f;
     [SerializeField] float slidingGravityScale = 1.0f;
     [SerializeField] int jumpDistanceToDie = 10;
+    [SerializeField] float levelLoadDelay = 2f;
 
     [Header("Player")]
-    [SerializeField] bool isIdle = false; 
+    [SerializeField] bool isIdle = false;
     [SerializeField] bool wallHitCheck;
     [SerializeField] float wallDistance;
     [SerializeField] int position;
     [SerializeField] bool isDead = false;
-    [SerializeField] string movementStatus = "start"; 
+    [SerializeField] string movementStatus = "start";
     [SerializeField] bool movementStatusChange;
-    [SerializeField] GameObject enemyObject; 
-
+    [SerializeField] GameObject enemyObject;
 
     [Header("Move")]
     [SerializeField] float moveSpeed = 2.0f;
@@ -73,7 +69,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject globalLight;
     LightController lightController;
 
-
     void Awake()
     {
         rigidbody2d = gameObject.GetComponent<Rigidbody2D>();
@@ -82,21 +77,17 @@ public class PlayerController : MonoBehaviour
         lightController = globalLight.GetComponent<LightController>();
         playerAudioController = FindObjectOfType<PlayerAudioController>();
     }
-
     void Start()
     {
         rigidbody2d.gravityScale = standardGravityScale;
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
     }
-
-    // Update is called once per frame  
     void Update()
     {
         if (!isDead)
         {
             position = (int)transform.position.y;
-
-            IsIdle(); 
+            IsIdle();
             IsJump();
             Move();
             FlipCheck();
@@ -105,17 +96,14 @@ public class PlayerController : MonoBehaviour
             Slide();
             playerAnimations.AnimationSwitch("isMovement");
         }
-
     }
-
     public Rigidbody2D GetRigidbody2D()
     {
         return rigidbody2d;
     }
-
     void IsIdle()
     {
-        if(isMove || isJump || isWallSlide)
+        if (isMove || isJump || isWallSlide)
         {
             isIdle = false;
 
@@ -125,7 +113,6 @@ public class PlayerController : MonoBehaviour
             isIdle = true;
             MovementStatusCheck("Idle");
         }
-
     }
     void OnJump(InputValue value)
     {
@@ -135,7 +122,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (boxCollider2d.IsTouchingLayers(groundLayer))
                 {
-                   
+
                     isJumpFirst = true;
                     rigidbody2d.velocity += new Vector2(0f, jumpForce);
 
@@ -151,7 +138,6 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-
     }
     void IsJump()
     {
@@ -160,12 +146,7 @@ public class PlayerController : MonoBehaviour
             if (transform.position.y > jumpPosition) jumpPosition = (int)transform.position.y;
             MovementStatusCheck("Jump");
         }
-        else
-        {
-            //--
-        }
     }
-
     public bool GetIsJump()
     {
         return isJump;
@@ -191,19 +172,16 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
     void Move()
     {
         rigidbody2d.velocity = new Vector2(moveValue.x * moveSpeed, rigidbody2d.velocity.y);
         isMove = (Mathf.Abs(rigidbody2d.velocity.x) > Mathf.Epsilon) && !isJump;
         if(isMove) MovementStatusCheck("Move");
     }
-
     public bool GetIsMove()
     {
         return isMove; 
     }
-
     void Slide()
     {
         if (isJump && wallHitCheck && (rigidbody2d.velocity.y < -Mathf.Epsilon) && isCanSlide)
@@ -212,7 +190,6 @@ public class PlayerController : MonoBehaviour
         }
         else rigidbody2d.gravityScale = standardGravityScale; 
     }
-
     public bool GetIsSlide()
     {
         return isWallSlide; 
@@ -230,7 +207,6 @@ public class PlayerController : MonoBehaviour
             Debug.DrawRay(transform.position, new Vector2(-wallDistance, 0), Color.red);
         }
     }
-
     private void IsWallSlide()
     {
         if (wallHitCheck && isJump && isCanSlide)
@@ -238,11 +214,10 @@ public class PlayerController : MonoBehaviour
             isWallSlide = true;
             MovementStatusCheck("Slide");
         }
-        else 
-        { 
+        else
+        {
             isWallSlide = false;
         }
-
     }
     private void FlipCheck()
     {
@@ -254,12 +229,13 @@ public class PlayerController : MonoBehaviour
     }
     private void Die()
     {
+        Debug.Log("You died!!!");
         isDead = true;
         lightController.SetLight("Dead");
         playerAnimations.AnimationSwitch("isDead");
         MovementStatusCheck("Dead");
+        StartCoroutine(RestartGame());
     }
-
     public bool IsDead()
     {
         return isDead;
@@ -268,8 +244,6 @@ public class PlayerController : MonoBehaviour
     {
         if (movementStatus != status)
         {
-            Debug.Log("movementStatus: " + movementStatus.ToString());
-            Debug.Log("status: " + status.ToString());
             movementStatus = status;
             movementStatusChange = true;
             playerAudioController.PlayAudioEffect(movementStatus);
@@ -287,6 +261,12 @@ public class PlayerController : MonoBehaviour
     {
         return movementStatusChange;
     }
+    private IEnumerator RestartGame()
+    {
+        yield return new WaitForSecondsRealtime(levelLoadDelay);
+        Debug.Log("load scene");
+        SceneManager.LoadScene(0);
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject == GroundObject)
@@ -296,8 +276,6 @@ public class PlayerController : MonoBehaviour
             if (((int)transform.position.y - jumpPosition) < -jumpDistanceToDie)
             {
                 Die();
-                Debug.Log("You died!!!");   
-                // restart game
             }
             else
             {
@@ -318,7 +296,6 @@ public class PlayerController : MonoBehaviour
             Die();
         }
     }
-
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject == SlidingObject)
@@ -326,8 +303,6 @@ public class PlayerController : MonoBehaviour
             isCanSlide = false;
         }
     }
-
-
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject == GroundObject)

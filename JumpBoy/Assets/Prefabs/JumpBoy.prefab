@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7870974400616504367}
   m_RootOrder: 1
@@ -43,24 +44,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ComponentVersion: 1
   m_LightType: 1
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.493
+  m_FalloffIntensity: 0.5
   m_Color: {r: 0.7688679, g: 0.9400282, b: 1, a: 1}
-  m_Intensity: 1.5
+  m_Intensity: 0.4
   m_LightVolumeIntensity: 1
-  m_LightVolumeIntensityEnabled: 0
+  m_LightVolumeIntensityEnabled: 1
   m_ApplyToSortingLayers: 0000000075b7439c23bf4030df313b2e1ba5922b3161b205
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
+  m_AlphaBlendOnOverlap: 0
   m_OverlapOperation: 0
   m_NormalMapDistance: 3
   m_NormalMapQuality: 2
   m_UseNormalMap: 0
-  m_ShadowIntensityEnabled: 0
+  m_ShadowIntensityEnabled: 1
   m_ShadowIntensity: 0.75
-  m_ShadowVolumeIntensityEnabled: 0
+  m_ShadowVolumeIntensityEnabled: 1
   m_ShadowVolumeIntensity: 0.75
   m_Vertices:
   - position: {x: 0.49039266, y: -0.09754512, z: 0}
@@ -712,6 +715,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7870974400505681566}
   m_Father: {fileID: 7870974400616504367}
@@ -746,7 +750,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 1, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -784,6 +788,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2.9567163, y: 4.709045, z: 24.114197}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7870974399595193833}
   m_RootOrder: 0
@@ -885,6 +890,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -9.412, y: 1.93, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7870974399595193833}
   - {fileID: 7870974399458903118}
@@ -930,7 +936,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 731030811
-  m_SortingLayer: 7
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_Sprite: {fileID: 4723107735738678597, guid: 0e3502a80399d164ea01f1868f65acbf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -977,8 +983,8 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.12876606, y: -0.6915305}
-  m_Size: {x: 0.38958836, y: 1.4520622}
+  m_Offset: {x: 0.12876606, y: -0.6754867}
+  m_Size: {x: 0.38958836, y: 1.4199746}
   m_Direction: 0
 --- !u!61 &7870974400616504372
 BoxCollider2D:
@@ -993,7 +999,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.12750268, y: -0.6564776}
+  m_Offset: {x: 0.12750268, y: -0.64526844}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1004,7 +1010,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4178996, y: 1.4377544}
+  m_Size: {x: 0.4178996, y: 1.4153361}
   m_EdgeRadius: 0
 --- !u!114 &7870974400616504363
 MonoBehaviour:
@@ -1038,7 +1044,7 @@ MonoBehaviour:
   m_Camera: {fileID: 0}
 --- !u!95 &7870974400616504373
 Animator:
-  serializedVersion: 3
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1051,6 +1057,7 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -1179,12 +1186,10 @@ MonoBehaviour:
   VerticalSpeed: 0
   jumpTimeCounter: 0
   isCollisionGold: 0
-  coinTag: Coin
-  goldTag: Gold
-  jumpUpgradeTag: JumpUpgrade
   standardGravityScale: 5
   slidingGravityScale: 1
   jumpDistanceToDie: 10
+  levelLoadDelay: 3
   isIdle: 0
   wallHitCheck: 0
   wallDistance: 0.41
@@ -1192,11 +1197,11 @@ MonoBehaviour:
   isDead: 0
   movementStatus: 
   movementStatusChange: 0
-  enemyObject: {fileID: 2972702836187515261, guid: 1db89db56641ba148aea0b33752c69a7, type: 3}
-  moveSpeed: 8
+  enemyObject: {fileID: 0}
+  moveSpeed: 7
   isFaceRight: 1
   isMove: 0
-  jumpForce: 20
+  jumpForce: 16
   jumpWallTime: 1
   isJump: 0
   isJumpPosible: 0

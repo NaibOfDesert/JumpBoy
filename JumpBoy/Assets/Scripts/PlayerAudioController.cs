@@ -28,27 +28,11 @@ public class PlayerAudioController : MonoBehaviour
     [SerializeField] AudioClip deadClip;
     [SerializeField] [Range(0f, 1f)] float deadVolume = 1f;
 
-
-    // Start is called before the first frame update
     void Awake()
     {
         audioSource = FindObjectOfType<AudioSource>();
         playerController = FindObjectOfType<PlayerController>();
     }
-
-    void Update()
-    {
-        /*
-        if (playerController.GetMovementStatusChange())
-        {
-            audioSource.enabled = false;
-            PlayAudioEffect(playerController.GetMovementStatus());
-            Debug.Log(playerController.GetMovementStatus());
-        }
-        */
-
-    }
-
     public void PlayAudioEffect(string value)
     {
         audioSource.enabled = false;
@@ -61,7 +45,6 @@ public class PlayerAudioController : MonoBehaviour
                     audioSource.volume = idleVolume;
                     break;
                 }
-
             case "Move":
                 {
                     audioSource.clip = moveClip;
@@ -69,7 +52,6 @@ public class PlayerAudioController : MonoBehaviour
                     audioSource.volume = moveVolume;
                     break;
                 }
-
             case "Jump":
                 {
                     audioSource.clip = jumpClip;
@@ -77,7 +59,6 @@ public class PlayerAudioController : MonoBehaviour
                     audioSource.volume = jumpVolume;
                     break;
                 }
-
             case "JumpEnd":
                 {
                     audioSource.clip = jumpClip;
@@ -85,7 +66,6 @@ public class PlayerAudioController : MonoBehaviour
                     audioSource.volume = jumpVolume;
                     break;
                 }
-
             case "Slide":
                 {
                     audioSource.clip = slideClip;
@@ -93,7 +73,6 @@ public class PlayerAudioController : MonoBehaviour
                     audioSource.volume = slideVolume;
                     break;
                 }
-
             case "Dead":
                 {
                     audioSource.clip = deadClip;
@@ -101,17 +80,13 @@ public class PlayerAudioController : MonoBehaviour
                     audioSource.volume = deadVolume;
                     break;
                 }
-
             default:
                 {
                     break;
                 }
         }
-
         audioSource.enabled = true;
-
     }
-
     void PlayClip(AudioClip clip, float volume)
     {
         AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position, volume);

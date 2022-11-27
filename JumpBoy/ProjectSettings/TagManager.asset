@@ -59,6 +59,9 @@ TagManager:
   - name: EnemyPlatform
     uniqueID: 119079943
     locked: 0
+  - name: Elements
+    uniqueID: 775631327
+    locked: 0
   - name: Enemy
     uniqueID: 4257641395
     locked: 0
@@ -67,9 +70,6 @@ TagManager:
     locked: 0
   - name: SlidingWall
     uniqueID: 95576369
-    locked: 0
-  - name: Elements
-    uniqueID: 775631327
     locked: 0
   - name: Player
     uniqueID: 731030811
