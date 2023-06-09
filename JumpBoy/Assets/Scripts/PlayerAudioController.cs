@@ -30,8 +30,9 @@ public class PlayerAudioController : MonoBehaviour
 
     void Awake()
     {
-        audioSource = FindObjectOfType<AudioSource>();
         playerController = FindObjectOfType<PlayerController>();
+        audioSource = playerController.GetComponent<AudioSource>();
+
     }
     public void PlayAudioEffect(string value)
     {
