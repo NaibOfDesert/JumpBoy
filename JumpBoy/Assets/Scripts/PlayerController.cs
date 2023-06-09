@@ -73,9 +73,9 @@ public class PlayerController : MonoBehaviour
     {
         rigidbody2d = gameObject.GetComponent<Rigidbody2D>();
         boxCollider2d = gameObject.GetComponent<BoxCollider2D>();
-        playerAnimations = FindObjectOfType<PlayerAnimations>();
+        playerAnimations = GetComponent<PlayerAnimations>();
         lightController = globalLight.GetComponent<LightController>();
-        playerAudioController = FindObjectOfType<PlayerAudioController>();
+        playerAudioController = GetComponent<PlayerAudioController>();
     }
     void Start()
     {
